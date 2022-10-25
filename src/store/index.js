@@ -16,12 +16,25 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    state: { //初期値
+      count: 1,
+      isAuth:false,
+    },
+    mutations: {
+      increment(state, payload) {
+        state.count+= payload.value
+      },
+      setIsAuth(state) {
+        state.isAuth = !state.isAuth
+      }
+    },
+    actions: {
+    },
+    getters: {
+    },
     modules: {
-      // example
     },
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
     strict: process.env.DEBUGGING
   })
 

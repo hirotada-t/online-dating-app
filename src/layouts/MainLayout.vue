@@ -2,41 +2,42 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+        <q-btn flat dense round icon="menu" aria-label="Menu" @click="leftDrawerOpen = !leftDrawerOpen" />
 
         <q-toolbar-title>
-          Quasar App
+          Online Dating App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
       <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
+        <q-item-label header class="text-grey-8">
+          MENU
         </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        {{$store.state.count}}
+        <q-btn @click="add">count up</q-btn>
+
+        <q-item v-if="$store.state.isAuth" clickable @click="loginInWithGoogle">
+          <q-item-section avatar>
+            <q-icon name="fa-brands fa-google" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Googleでログイン</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item v-else clickable @click="logout">
+          <q-item-section avatar>
+            <q-icon name="fa-brands fa-google" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>ログアウト</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -47,63 +48,52 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+  import EssentialLink from 'components/EssentialLink.vue'
+  import { signInWithPopup, signOut } from 'firebase/auth'
+  import { auth, provider } from '../firebase'
 
-const linksData = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+  const linksData = [
+    {
+      title: 'Docs',
+      caption: 'quasar.dev',
+      icon: 'school',
+      link: 'https://quasar.dev'
+    },
+    {
+      title: 'Quasar Awesome',
+      caption: 'Community Quasar projects',
+      icon: 'favorite',
+      link: 'https://awesome.quasar.dev'
+    }
+  ];
 
-export default {
-  name: 'MainLayout',
-  components: {
-    EssentialLink
-  },
-  data () {
-    return {
-      leftDrawerOpen: false,
-      essentialLinks: linksData
+  export default {
+    name: 'MainLayout',
+    components: {
+      EssentialLink
+    },
+    data() {
+      return {
+        leftDrawerOpen: false,
+        essentialLinks: linksData
+      }
+    },
+    methods: {
+      loginInWithGoogle() {
+        signInWithPopup(auth, provider).then((result) => {
+        localStorage.setItem("isAuth", this.$store.state.isAuth)
+          this.$store.commit('setIsAuth');
+        });
+      },
+      logout() {
+        signOut(auth).then(() => {
+          localStorage.clear()
+          this.$store.commit('setIsAuth');
+        })
+      },
+      add() {
+        this.$store.commit('increment',{value : 10});
+      },
     }
   }
-}
 </script>
