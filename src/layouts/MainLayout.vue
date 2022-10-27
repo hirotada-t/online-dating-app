@@ -1,17 +1,17 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="leftDrawerOpen = !leftDrawerOpen" />
 
         <q-toolbar-title>
           Online Dating App
         </q-toolbar-title>
+        <q-btn flat dense round icon="menu" @click="right = !right" />
 
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
+    <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
       <q-list>
         <q-item-label header class="text-grey-8">
           MENU
@@ -74,14 +74,14 @@
     },
     data() {
       return {
-        leftDrawerOpen: false,
+        right: false,
         essentialLinks: linksData
       }
     },
     methods: {
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
-        localStorage.setItem("isAuth", this.$store.state.isAuth)
+          localStorage.setItem("isAuth", this.$store.state.isAuth)
           this.$store.commit('setIsAuth');
         });
       },
@@ -92,7 +92,7 @@
         })
       },
       add() {
-        this.$store.commit('increment',{value : 10});
+        this.$store.commit('increment', { value: 10 });
       },
     }
   }
