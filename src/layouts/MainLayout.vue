@@ -6,12 +6,25 @@
         <q-toolbar-title>
           Online Dating App
         </q-toolbar-title>
+
+        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="$store.state.isAuth">
+          サインイン/ログイン</q-btn>
+        <q-btn flat dense rounded @click="logout" v-else>
+          <img src="" alt="">
+          name
+        </q-btn>
         <q-btn flat dense round icon="menu" @click="right = !right" />
 
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
+      <ul>
+        <li v-for="user of getTestUsers" :key="user.id">
+          {{user.id}} / {{user.name}} / {{user.isVisible}}
+        </li>
+        <li>{{getUserById}}</li>
+      </ul>
       <q-list>
         <q-item-label header class="text-grey-8">
           MENU
@@ -81,19 +94,31 @@
     methods: {
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
+          console.log(result)
           localStorage.setItem("isAuth", this.$store.state.isAuth)
-          this.$store.commit('setIsAuth');
+          this.$store.dispatch('setIsAuthAction');
+          this.right = false;
+          // 登録ページヘ遷移
         });
       },
       logout() {
         signOut(auth).then(() => {
           localStorage.clear()
-          this.$store.commit('setIsAuth');
+          this.$store.dispatch('setIsAuthAction');
+          this.right = false;
         })
       },
       add() {
-        this.$store.commit('increment', { value: 10 });
+        this.$store.dispatch('incrementAction', { value: 10 });
       },
+    },
+    computed: {
+      getTestUsers() {
+        return this.$store.getters.visibleUsers;
+      },
+      getUserById() {
+        return this.$store.getters.getUserById(1);
+      }
     }
   }
 </script>
