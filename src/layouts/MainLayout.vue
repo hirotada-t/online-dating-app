@@ -20,10 +20,10 @@
 
     <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
       <ul>
-        <li v-for="user of getTestUsers" :key="user.id">
+        <li v-for="user of visibleUsers" :key="user.id">
           {{user.id}} / {{user.name}} / {{user.isVisible}}
         </li>
-        <li>{{getUserById}}</li>
+        <li>{{getTestUserById}}</li>
       </ul>
       <q-list>
         <q-item-label header class="text-grey-8">
@@ -64,6 +64,7 @@
   import EssentialLink from 'components/EssentialLink.vue'
   import { signInWithPopup, signOut } from 'firebase/auth'
   import { auth, provider } from '../firebase'
+  import { mapActions, mapGetters } from 'vuex'
 
   const linksData = [
     {
@@ -92,11 +93,12 @@
       }
     },
     methods: {
+      ...mapActions(['increment', 'setIsAuth']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           console.log(result)
           localStorage.setItem("isAuth", this.$store.state.isAuth)
-          this.$store.dispatch('setIsAuthAction');
+          this.setIsAuth();
           this.right = false;
           // 登録ページヘ遷移
         });
@@ -104,20 +106,21 @@
       logout() {
         signOut(auth).then(() => {
           localStorage.clear()
-          this.$store.dispatch('setIsAuthAction');
+          this.setIsAuth();
           this.right = false;
         })
       },
       add() {
-        this.$store.dispatch('incrementAction', { value: 10 });
+        this.increment({ value: 10 });
       },
     },
     computed: {
-      getTestUsers() {
-        return this.$store.getters.visibleUsers;
-      },
-      getUserById() {
-        return this.$store.getters.getUserById(1);
+      ...mapGetters(['visibleUsers', 'getUserById']),
+      // getTestUsers() {
+      //   return this.$store.getters.visibleUsers;
+      // },
+      getTestUserById() {
+        return this.getUserById(1);
       }
     }
   }

@@ -45,10 +45,10 @@ export default function (/* { ssrContext } */) {
       }
     },
     actions: {
-      incrementAction({commit}, peyload) {
+      increment({commit}, peyload) {
         commit('increment', peyload);
       },
-      setIsAuthAction({commit}, peyload) {
+      setIsAuth({commit}, peyload) {
         commit('setIsAuth', peyload);
       }
     },
