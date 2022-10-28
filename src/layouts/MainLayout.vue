@@ -7,11 +7,11 @@
           Online Dating App
         </q-toolbar-title>
 
-        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="$store.state.isAuth">
+        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
           サインイン/ログイン</q-btn>
-        <q-btn flat dense rounded @click="logout" v-else>
-          <img src="{{}}" alt="">
-          name
+        <q-btn flat dense rounded v-else>
+          <img :src="$store.state.user.imgURL" alt="">
+          {{$store.state.user.loginUserName}}
         </q-btn>
         <q-btn flat dense round icon="menu" @click="right = !right" />
 
@@ -32,7 +32,7 @@
         {{$store.state.count}}
         <q-btn @click="add">count up</q-btn>
 
-        <q-item v-if="$store.state.isAuth" clickable @click="loginInWithGoogle">
+        <q-item v-if="!$store.state.user.isAuth" clickable @click="loginInWithGoogle">
           <q-item-section avatar>
             <q-icon name="fa-brands fa-google" />
           </q-item-section>
@@ -95,13 +95,14 @@
       }
     },
     methods: {
-      ...mapActions(['increment', 'setIsAuth']),
+      ...mapActions(['increment']),
+      ...mapActions('user', ['setIsAuth','setLoginUser']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           console.log(result)
           localStorage.setItem("isAuth", this.$store.state.isAuth);
-          this.addNewUser(result);
-          this.setIsAuth();
+          this.setUserInfo(result);
+          this.setIsAuth(true);
           this.right = false;
           /*
           ①メールアドレスでDBを検索
@@ -120,11 +121,11 @@
       logout() {
         signOut(auth).then(() => {
           localStorage.clear()
-          this.setIsAuth();
+          this.setIsAuth(false);
           this.right = false;
         })
       },
-      async addNewUser(res) {
+      async setUserInfo(res) {
         const q = query(collection(db, "users"), where("email", "==", res.user.email));
         const existUser = await getDocs(q);
         // 新規ユーザーをDBに登録
@@ -138,11 +139,11 @@
             preferredType: "",
             hobby: "",
             comment: "",
-          }).then((result) => {
-            
-            this.$router.push('/userId');
-          });
+          })
+          this.$router.push('/userId');
         }
+        console.log(res.user);
+        this.setLoginUser(res.user);
       },
       add() {
         this.increment({ value: 10 });
