@@ -24,8 +24,7 @@ export default function (/* { ssrContext } */) {
         {id: 1, name: "大谷", isVisible: true},
         {id: 2, name: "村上", isVisible: false},
         {id: 3, name: "ダルビッシュ", isVisible: true},
-      ],
-      isAuth:false,
+      ]
     },
     getters: {
       // visibleUsers(state){
@@ -39,18 +38,12 @@ export default function (/* { ssrContext } */) {
     mutations: {
       increment(state, payload) {
         state.count+= payload.value
-      },
-      setIsAuth(state) {
-        state.isAuth = !state.isAuth
       }
     },
     actions: {
-      incrementAction({commit}, peyload) {
+      increment({commit}, peyload) {
         commit('increment', peyload);
       },
-      setIsAuthAction({commit}, peyload) {
-        commit('setIsAuth', peyload);
-      }
     },
     modules: {
       user,

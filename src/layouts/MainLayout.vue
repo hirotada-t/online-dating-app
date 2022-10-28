@@ -7,11 +7,11 @@
           Online Dating App
         </q-toolbar-title>
 
-        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="$store.state.isAuth">
+        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
           サインイン/ログイン</q-btn>
-        <q-btn flat dense rounded @click="logout" v-else>
-          <img src="" alt="">
-          name
+        <q-btn flat dense rounded v-else>
+          <img :src="$store.state.user.imgURL" alt="">
+          {{$store.state.user.loginUserName}}
         </q-btn>
         <q-btn flat dense round icon="menu" @click="right = !right" />
 
@@ -20,10 +20,10 @@
 
     <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
       <ul>
-        <li v-for="user of getTestUsers" :key="user.id">
+        <li v-for="user of visibleUsers" :key="user.id">
           {{user.id}} / {{user.name}} / {{user.isVisible}}
         </li>
-        <li>{{getUserById}}</li>
+        <li>{{getTestUserById}}</li>
       </ul>
       <q-list>
         <q-item-label header class="text-grey-8">
@@ -32,7 +32,7 @@
         {{$store.state.count}}
         <q-btn @click="add">count up</q-btn>
 
-        <q-item v-if="$store.state.isAuth" clickable @click="loginInWithGoogle">
+        <q-item v-if="!$store.state.user.isAuth" clickable @click="loginInWithGoogle">
           <q-item-section avatar>
             <q-icon name="fa-brands fa-google" />
           </q-item-section>
@@ -63,7 +63,10 @@
 <script>
   import EssentialLink from 'components/EssentialLink.vue'
   import { signInWithPopup, signOut } from 'firebase/auth'
-  import { auth, provider } from '../firebase'
+  import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+  import { auth, db, provider } from '../firebase'
+  import { mapActions, mapGetters } from 'vuex'
+
 
   const linksData = [
     {
@@ -92,32 +95,67 @@
       }
     },
     methods: {
+      ...mapActions(['increment']),
+      ...mapActions('user', ['setIsAuth','setLoginUser']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           console.log(result)
-          localStorage.setItem("isAuth", this.$store.state.isAuth)
-          this.$store.dispatch('setIsAuthAction');
+          localStorage.setItem("isAuth", this.$store.state.isAuth);
+          this.setUserInfo(result);
+          this.setIsAuth(true);
           this.right = false;
-          // 登録ページヘ遷移
+          /*
+          ①メールアドレスでDBを検索
+          ②-1アドレスが登録されている場合
+          ・store/userにログインユーザーの情報をコミット
+          ②-2アドレスが未登録の場合
+          ・firebaseにアカウント情報を登録
+          ・登録ページヘ遷移
+          ・グーグルアカウントから情報を抜き出し
+          ・登録内容（ニックネーム/画像/生まれ/性別/好みのタイプ/趣味/コメント）を記入
+          ・firebaseを更新
+          ③ログイン完了画面へ遷移（リストページ）
+          */
         });
       },
       logout() {
         signOut(auth).then(() => {
           localStorage.clear()
-          this.$store.dispatch('setIsAuthAction');
+          this.setIsAuth(false);
           this.right = false;
         })
       },
+      async setUserInfo(res) {
+        const q = query(collection(db, "users"), where("email", "==", res.user.email));
+        const existUser = await getDocs(q);
+        // 新規ユーザーをDBに登録
+        if (existUser.empty) {
+          await addDoc(collection(db, "users"), {
+            name: res.user.displayName,
+            img: res.user.photoURL,
+            email: res.user.email,
+            birth: null,
+            sex: "",
+            preferredType: "",
+            hobby: "",
+            comment: "",
+          })
+          this.$router.push('/userId');
+        }
+        console.log(res.user);
+        this.setLoginUser(res.user);
+      },
       add() {
-        this.$store.dispatch('incrementAction', { value: 10 });
+        this.increment({ value: 10 });
       },
     },
     computed: {
-      getTestUsers() {
-        return this.$store.getters.visibleUsers;
-      },
-      getUserById() {
-        return this.$store.getters.getUserById(1);
+      ...mapGetters(['visibleUsers', 'getUserById']),
+      // getTestUsers() {
+      //   return this.$store.getters.visibleUsers;
+      // },
+      getTestUserById() {
+        return this.getUserById(1);
       }
     }
   }
