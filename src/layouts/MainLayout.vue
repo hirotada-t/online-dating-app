@@ -10,7 +10,7 @@
         <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="$store.state.isAuth">
           サインイン/ログイン</q-btn>
         <q-btn flat dense rounded @click="logout" v-else>
-          <img src="" alt="">
+          <img src="{{}}" alt="">
           name
         </q-btn>
         <q-btn flat dense round icon="menu" @click="right = !right" />
@@ -63,8 +63,10 @@
 <script>
   import EssentialLink from 'components/EssentialLink.vue'
   import { signInWithPopup, signOut } from 'firebase/auth'
-  import { auth, provider } from '../firebase'
+  import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+  import { auth, db, provider } from '../firebase'
   import { mapActions, mapGetters } from 'vuex'
+
 
   const linksData = [
     {
@@ -97,7 +99,8 @@
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           console.log(result)
-          localStorage.setItem("isAuth", this.$store.state.isAuth)
+          localStorage.setItem("isAuth", this.$store.state.isAuth);
+          this.addNewUser(result);
           this.setIsAuth();
           this.right = false;
           /*
@@ -105,10 +108,11 @@
           ②-1アドレスが登録されている場合
           ・store/userにログインユーザーの情報をコミット
           ②-2アドレスが未登録の場合
+          ・firebaseにアカウント情報を登録
           ・登録ページヘ遷移
-          ・登録内容（ニックネーム/画像/性別/好みのタイプ/趣味/コメント）
           ・グーグルアカウントから情報を抜き出し
-          ・DBに登録
+          ・登録内容（ニックネーム/画像/生まれ/性別/好みのタイプ/趣味/コメント）を記入
+          ・firebaseを更新
           ③ログイン完了画面へ遷移（リストページ）
           */
         });
@@ -119,6 +123,26 @@
           this.setIsAuth();
           this.right = false;
         })
+      },
+      async addNewUser(res) {
+        const q = query(collection(db, "users"), where("email", "==", res.user.email));
+        const existUser = await getDocs(q);
+        // 新規ユーザーをDBに登録
+        if (existUser.empty) {
+          await addDoc(collection(db, "users"), {
+            name: res.user.displayName,
+            img: res.user.photoURL,
+            email: res.user.email,
+            birth: null,
+            sex: "",
+            preferredType: "",
+            hobby: "",
+            comment: "",
+          }).then((result) => {
+            
+            this.$router.push('/userId');
+          });
+        }
       },
       add() {
         this.increment({ value: 10 });
