@@ -1,25 +1,27 @@
 const state = {
-  isAuth:false,
-  loginUserName: "",
-  imgURL: "",
-  email: "",
-  birth: null,
-  sex: "",
-  preferredType: "",
-  hobby: "",
-  comment: "",
+  isAuth: localStorage.getItem("isAuth"),
+  info: {
+    displayName: "",
+    photoURL: "",
+    email: "",
+    birth: null,
+    sex: "",
+    preferredType: "",
+    hobby: "",
+    comment: "",
+  }
 }
 
 const mutations = {
   setLoginUser(state, user) {
-    state.loginUserName = user.displayName;
-    state.imgURL = user.photoURL;
-    state.email = user.email;
-    state.birth = user.birth;
-    state.sex = user.sex;
-    state.preferredType = user.preferredType;
-    state.hobby = user.hobby;
-    state.comment = user.comment;
+    state.info.displayName = user.displayName;
+    state.info.photoURL = user.photoURL;
+    state.info.email = user.email;
+    state.info.birth = user.birth;
+    state.info.sex = user.sex;
+    state.info.preferredType = user.preferredType;
+    state.info.hobby = user.hobby;
+    state.info.comment = user.comment;
   },
   setIsAuth(state, user) {
     state.isAuth = user;
@@ -27,19 +29,20 @@ const mutations = {
 }
 
 const getters = {
+  getUserInfo: state => state.info,
 }
 
 const actions = {
-  setLoginUser({commit}, user) {
+  setLoginUser({ commit }, user) {
     commit('setLoginUser', user);
   },
-  setIsAuth({commit},user) {
+  setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
   }
 }
 
 export default {
-  namespaced:true,
+  namespaced: true,
   state,
   mutations,
   getters,
