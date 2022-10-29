@@ -7,11 +7,14 @@
           Online Dating App
         </q-toolbar-title>
 
-        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
+        <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle"
+          v-if="!$store.state.user.isAuth">
           サインイン/ログイン</q-btn>
         <q-btn flat dense rounded v-else>
-          <img :src="$store.state.user.imgURL" alt="">
-          {{$store.state.user.loginUserName}}
+          <img round :src="$store.state.user.info.photoURL" alt="" class="w-50px">
+          <span class="q-ml-sm q-mr-md">
+            {{$store.state.user.info.displayName}}
+          </span>
         </q-btn>
         <q-btn flat dense round icon="menu" @click="right = !right" />
 
@@ -96,14 +99,24 @@
     },
     methods: {
       ...mapActions(['increment']),
-      ...mapActions('user', ['setIsAuth','setLoginUser']),
+      ...mapActions('user', ['setIsAuth', 'setLoginUser']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
+          // サインイン→ストレージに保存→（新規登録）→画面遷移
           console.log(result)
-          localStorage.setItem("isAuth", this.$store.state.isAuth);
-          this.setUserInfo(result);
           this.setIsAuth(true);
+          localStorage.setItem("isAuth", true);
+
+          this.setLoginUser(result.user);
+          const userInfoString = JSON.stringify(this.getUserInfo);
+          localStorage.setItem("userInfo", userInfoString);
           this.right = false;
+          if (this.existUser(result).empty) {
+            this.setUserInfo(result);
+            this.$router.push('userId');
+          } else {
+            this.$router.push('users');
+          }
           /*
           ①メールアドレスでDBを検索
           ②-1アドレスが登録されている場合
@@ -123,27 +136,25 @@
           localStorage.clear()
           this.setIsAuth(false);
           this.right = false;
-        })
+        });
+        this.$router.push('/');
+      },
+      async existUser(res) {
+        const q = query(collection(db, "users"), where("email", "==", res.user.email));
+        return await getDocs(q);
       },
       async setUserInfo(res) {
-        const q = query(collection(db, "users"), where("email", "==", res.user.email));
-        const existUser = await getDocs(q);
         // 新規ユーザーをDBに登録
-        if (existUser.empty) {
-          await addDoc(collection(db, "users"), {
-            name: res.user.displayName,
-            img: res.user.photoURL,
-            email: res.user.email,
-            birth: null,
-            sex: "",
-            preferredType: "",
-            hobby: "",
-            comment: "",
-          })
-          this.$router.push('/userId');
-        }
-        console.log(res.user);
-        this.setLoginUser(res.user);
+        await addDoc(collection(db, "users"), {
+          name: res.user.displayName,
+          img: res.user.photoURL,
+          email: res.user.email,
+          birth: null,
+          sex: "",
+          preferredType: "",
+          hobby: "",
+          comment: "",
+        })
       },
       add() {
         this.increment({ value: 10 });
@@ -151,12 +162,18 @@
     },
     computed: {
       ...mapGetters(['visibleUsers', 'getUserById']),
+      ...mapGetters('user', ['getUserInfo']),
       // getTestUsers() {
       //   return this.$store.getters.visibleUsers;
       // },
       getTestUserById() {
         return this.getUserById(1);
       }
+    },
+    created() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      console.log(userInfo)
+      this.setLoginUser(userInfo);
     }
   }
 </script>
