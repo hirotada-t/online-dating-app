@@ -7,8 +7,6 @@
           Online Dating App
         </q-toolbar-title>
 
-
-
         <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle"
           v-if="!$store.state.user.isAuth">
           サインイン/ログイン
@@ -25,63 +23,42 @@
                 <q-item-section>MENU</q-item-section>
               </q-item>
               <q-separator />
-              <q-item clickable v-close-popup>
+              <q-item clickable to="search">
                 <q-item-section>
-                  <router-link to="message">メッセージ</router-link>
+                  ユーザーを探す
                 </q-item-section>
               </q-item>
-              <q-item clickable>
+              <q-item clickable to="message">
                 <q-item-section>
-                  <router-link to="edit-profile">プロフィール設定</router-link>
+                   メッセージ
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup>
-                <q-item-section>History</q-item-section>
+              <q-item clickable to="edit-profile">
+                <q-item-section>
+                  プロフィール設定
+                </q-item-section>
               </q-item>
+              <q-item clickable @click="logout">
+                <q-item-section>
+                  <q-item-label>ログアウト</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <ul>
+                <li v-for="user of visibleUsers" :key="user.id">
+                  {{user.id}} / {{user.name}} / {{user.isVisible}}
+                </li>
+              </ul>
+              <p>{{getTestUserById}}</p>
+              {{$store.state.count}}
+              <q-btn @click="add">count up</q-btn>
+              <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
             </q-list>
           </q-menu>
         </q-btn>
 
-        <q-btn flat dense round icon="menu" @click="right = !right" />
-
       </q-toolbar>
     </q-header>
-
-    <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
-      <ul>
-        <li v-for="user of visibleUsers" :key="user.id">
-          {{user.id}} / {{user.name}} / {{user.isVisible}}
-        </li>
-        <li>{{getTestUserById}}</li>
-      </ul>
-      <q-list>
-        <q-item-label header class="text-grey-8">
-          MENU
-        </q-item-label>
-        {{$store.state.count}}
-        <q-btn @click="add">count up</q-btn>
-
-        <q-item v-if="!$store.state.user.isAuth" clickable @click="loginInWithGoogle">
-          <q-item-section avatar>
-            <q-icon name="fa-brands fa-google" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Googleでログイン</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item v-else clickable @click="logout">
-          <q-item-section avatar>
-            <q-icon name="fa-brands fa-google" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>ログアウト</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -141,7 +118,7 @@
             this.setUserInfo(result);
             this.$router.push('edit-profile');
           } else {
-            this.$router.push('users');
+            this.$router.push('search');
           }
           /*
           ①メールアドレスでDBを検索
