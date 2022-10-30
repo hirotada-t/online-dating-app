@@ -9,52 +9,62 @@
 
         <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle"
           v-if="!$store.state.user.isAuth">
-          サインイン/ログイン</q-btn>
+          サインイン/ログイン
+        </q-btn>
+
         <q-btn flat dense rounded v-else>
-          <img round :src="$store.state.user.info.photoURL" alt="" class="w-50px">
+          <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
           <span class="q-ml-sm q-mr-md">
             {{$store.state.user.info.displayName}}
           </span>
+          <q-menu>
+            <q-list style="min-width: 200px">
+              <q-item v-close-popup>
+                <q-item-section>MENU</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable to="search">
+                <q-item-section>
+                  ユーザーを探す
+                </q-item-section>
+              </q-item>
+              <q-item clickable to="message">
+                <q-item-section>
+                   メッセージ
+                </q-item-section>
+              </q-item>
+              <q-item clickable to="edit-profile">
+                <q-item-section>
+                  プロフィール設定
+                </q-item-section>
+              </q-item>
+              <q-item clickable @click="logout">
+                <q-item-section>
+                  <q-item-label>ログアウト</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <ul>
+                <li v-for="user of visibleUsers" :key="user.id">
+                  {{user.id}} / {{user.name}} / {{user.isVisible}}
+                </li>
+              </ul>
+              <p>{{getTestUserById}}</p>
+              {{$store.state.count}}
+              <q-btn @click="add">count up</q-btn>
+              <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+            </q-list>
+          </q-menu>
         </q-btn>
-        <q-btn flat dense round icon="menu" @click="right = !right" />
 
       </q-toolbar>
     </q-header>
+    <q-drawer show-if-above side="left">
+      <!-- drawer content -->
+    </q-drawer>
 
-    <q-drawer v-model="right" side="right" overlay behavior="mobile" elavated>
-      <ul>
-        <li v-for="user of visibleUsers" :key="user.id">
-          {{user.id}} / {{user.name}} / {{user.isVisible}}
-        </li>
-        <li>{{getTestUserById}}</li>
-      </ul>
-      <q-list>
-        <q-item-label header class="text-grey-8">
-          MENU
-        </q-item-label>
-        {{$store.state.count}}
-        <q-btn @click="add">count up</q-btn>
-
-        <q-item v-if="!$store.state.user.isAuth" clickable @click="loginInWithGoogle">
-          <q-item-section avatar>
-            <q-icon name="fa-brands fa-google" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Googleでログイン</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item v-else clickable @click="logout">
-          <q-item-section avatar>
-            <q-icon name="fa-brands fa-google" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>ログアウト</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-      </q-list>
+    <q-drawer show-if-above side="right">
+      <!-- drawer content -->
     </q-drawer>
 
     <q-page-container>
@@ -93,7 +103,6 @@
     },
     data() {
       return {
-        right: false,
         essentialLinks: linksData
       }
     },
@@ -104,18 +113,19 @@
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
           console.log(result)
+
           this.setIsAuth(true);
           localStorage.setItem("isAuth", true);
 
           this.setLoginUser(result.user);
           const userInfoString = JSON.stringify(this.getUserInfo);
           localStorage.setItem("userInfo", userInfoString);
-          this.right = false;
-          if (this.existUser(result).empty) {
+
+          if (this.existUser(result)) {
             this.setUserInfo(result);
-            this.$router.push('userId');
+            this.$router.push('edit-profile');
           } else {
-            this.$router.push('users');
+            this.$router.push('search');
           }
           /*
           ①メールアドレスでDBを検索
@@ -132,16 +142,18 @@
         });
       },
       logout() {
-        signOut(auth).then(() => {
-          localStorage.clear()
-          this.setIsAuth(false);
-          this.right = false;
-        });
-        this.$router.push('/');
+        if(confirm("ログアウトしますか？")) {
+          signOut(auth).then(() => {
+            localStorage.clear()
+            this.setIsAuth(false);
+          });
+          this.$router.push('/');
+        }
       },
       async existUser(res) {
         const q = query(collection(db, "users"), where("email", "==", res.user.email));
-        return await getDocs(q);
+        const snap = await getDocs(q);
+        return snap.empty;
       },
       async setUserInfo(res) {
         // 新規ユーザーをDBに登録
@@ -150,7 +162,7 @@
           img: res.user.photoURL,
           email: res.user.email,
           birth: null,
-          sex: "",
+          gender: "",
           preferredType: "",
           hobby: "",
           comment: "",
@@ -172,7 +184,6 @@
     },
     created() {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      console.log(userInfo)
       this.setLoginUser(userInfo);
     }
   }
