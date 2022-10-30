@@ -48,7 +48,10 @@
         console.log(this.randomUser)
       },
       async getUser() {
-        const queryUser = await getDocs(collection(db, "users"));
+        const loginUser = JSON.parse(localStorage.getItem("userInfo"));
+        console.log(loginUser.email)
+        const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
+        const queryUser = await getDocs(q);
         queryUser.forEach(doc => {
           this.userList.push(doc.data());
         });
