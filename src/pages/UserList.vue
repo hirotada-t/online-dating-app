@@ -2,12 +2,21 @@
   <q-page class="flex flex-center column">
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
-      <div class="col-3 q-px-sm q-my-sm" v-for="user in randomUser" :key="user.id.value">
+      <div class="col-3 q-px-sm q-my-sm" v-for="user in userList" :key="user.name">
         <q-card>
-          <img :src="user.picture.large">
+          <img :src="user.img">
           <q-card-section>
-            <div class="text-h6">{{user.name.first}}</div>
-            <div class="text-subtitle2">age: {{user.dob.age}}</div>
+            <div class="text-h6">{{user.name}}</div>
+            <div class="text-subtitle2">age: {{user.birth}}</div>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-3 q-px-sm q-my-sm" v-for="sample in randomUser" :key="sample.id.value">
+        <q-card>
+          <img :src="sample.picture.large">
+          <q-card-section>
+            <div class="text-h6">{{sample.name.first}}(Sample)</div>
+            <div class="text-subtitle2">age: {{sample.dob.age}}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -17,6 +26,9 @@
 </template>
 
 <script>
+  import { collection, query, where, getDocs } from 'firebase/firestore';
+  import {db} from '../firebase'
+
   const apiURL = 'https://randomuser.me/api/?results=5';
   const apiOption = {
     method: 'get',
@@ -25,7 +37,8 @@
     name: 'UserList',
     data() {
       return {
-        randomUser: null,
+        userList: [],
+        randomUser: [],
       }
     },
     methods: {
@@ -34,9 +47,16 @@
         this.randomUser = response.results;
         console.log(this.randomUser)
       },
+      async getUser() {
+        const queryUser = await getDocs(collection(db, "users"));
+        queryUser.forEach(doc => {
+          this.userList.push(doc.data());
+        });
+      },
     },
     created() {
       this.getRandomUser();
+      this.getUser();
     },
   }
 </script>
