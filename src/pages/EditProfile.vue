@@ -25,7 +25,7 @@
 
 <script>
   export default {
-    name: 'UserInfo',
+    name: 'EditProfile',
     data() {
       return {
         name: null,

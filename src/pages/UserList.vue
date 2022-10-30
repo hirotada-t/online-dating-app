@@ -27,7 +27,7 @@
 
 <script>
   import { collection, query, where, getDocs } from 'firebase/firestore';
-  import {db} from '../firebase'
+  import { db } from '../firebase'
 
   const apiURL = 'https://randomuser.me/api/?results=5';
   const apiOption = {
@@ -45,11 +45,9 @@
       async getRandomUser() {
         const response = await fetch(apiURL, apiOption).then(res => res.json());
         this.randomUser = response.results;
-        console.log(this.randomUser)
       },
       async getUser() {
         const loginUser = JSON.parse(localStorage.getItem("userInfo"));
-        console.log(loginUser.email)
         const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
         const queryUser = await getDocs(q);
         queryUser.forEach(doc => {
@@ -62,4 +60,10 @@
       this.getUser();
     },
   }
+  /*
+  ToDo
+  ・再読み込みのチラツキ（ローディング画面）
+  ・詳細ページへのリンク
+  ・サンプルの読み込みを1回にする（storeに登録→空なら読み込まない）
+  */
 </script>

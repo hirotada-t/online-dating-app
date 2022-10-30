@@ -9,7 +9,9 @@ const state = {
     preferredType: "",
     hobby: "",
     comment: "",
-  }
+  },
+  sample: [],
+  sampleLoaded: false,
 }
 
 const mutations = {
@@ -25,11 +27,18 @@ const mutations = {
   },
   setIsAuth(state, user) {
     state.isAuth = user;
+  },
+  setSampleUser(state, user) {
+    state.sample = user;
+  },
+  setSampleLoaded(state) {
+    state.sampleLoaded = true;
   }
 }
 
 const getters = {
   getUserInfo: state => state.info,
+  getSampleLoaded: state => state.sampleLoaded,
 }
 
 const actions = {
@@ -38,6 +47,12 @@ const actions = {
   },
   setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
+  },
+  setSampleUser({commit}, user) {
+    commit('setSampleUser', user);
+  },
+  setSampleLoaded({commit}) {
+    commit('setSampleLoaded')
   }
 }
 
