@@ -5,7 +5,7 @@ const state = {
     photoURL: "",
     email: "",
     birth: null,
-    sex: "",
+    gender: "",
     preferredType: "",
     hobby: "",
     comment: "",
@@ -18,7 +18,7 @@ const mutations = {
     state.info.photoURL = user.photoURL;
     state.info.email = user.email;
     state.info.birth = user.birth;
-    state.info.sex = user.sex;
+    state.info.gender = user.gender;
     state.info.preferredType = user.preferredType;
     state.info.hobby = user.hobby;
     state.info.comment = user.comment;

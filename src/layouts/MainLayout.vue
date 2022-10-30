@@ -59,6 +59,13 @@
 
       </q-toolbar>
     </q-header>
+    <q-drawer show-if-above side="left">
+      <!-- drawer content -->
+    </q-drawer>
+
+    <q-drawer show-if-above side="right">
+      <!-- drawer content -->
+    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -96,7 +103,6 @@
     },
     data() {
       return {
-        right: false,
         essentialLinks: linksData
       }
     },
@@ -107,14 +113,15 @@
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
           console.log(result)
+
           this.setIsAuth(true);
           localStorage.setItem("isAuth", true);
 
           this.setLoginUser(result.user);
           const userInfoString = JSON.stringify(this.getUserInfo);
           localStorage.setItem("userInfo", userInfoString);
-          this.right = false;
-          if (this.existUser(result).empty) {
+
+          if (this.existUser(result)) {
             this.setUserInfo(result);
             this.$router.push('edit-profile');
           } else {
@@ -135,16 +142,18 @@
         });
       },
       logout() {
-        signOut(auth).then(() => {
-          localStorage.clear()
-          this.setIsAuth(false);
-          this.right = false;
-        });
-        this.$router.push('/');
+        if(confirm("ログアウトしますか？")) {
+          signOut(auth).then(() => {
+            localStorage.clear()
+            this.setIsAuth(false);
+          });
+          this.$router.push('/');
+        }
       },
       async existUser(res) {
         const q = query(collection(db, "users"), where("email", "==", res.user.email));
-        return await getDocs(q);
+        const snap = await getDocs(q);
+        return snap.empty;
       },
       async setUserInfo(res) {
         // 新規ユーザーをDBに登録
@@ -153,7 +162,7 @@
           img: res.user.photoURL,
           email: res.user.email,
           birth: null,
-          sex: "",
+          gender: "",
           preferredType: "",
           hobby: "",
           comment: "",
