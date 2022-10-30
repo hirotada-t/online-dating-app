@@ -7,15 +7,41 @@
           Online Dating App
         </q-toolbar-title>
 
+
+
         <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle"
           v-if="!$store.state.user.isAuth">
-          サインイン/ログイン</q-btn>
+          サインイン/ログイン
+        </q-btn>
+
         <q-btn flat dense rounded v-else>
-          <img round :src="$store.state.user.info.photoURL" alt="" class="w-50px">
+          <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
           <span class="q-ml-sm q-mr-md">
             {{$store.state.user.info.displayName}}
           </span>
+          <q-menu>
+            <q-list style="min-width: 200px">
+              <q-item v-close-popup>
+                <q-item-section>MENU</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <router-link to="message">メッセージ</router-link>
+                </q-item-section>
+              </q-item>
+              <q-item clickable>
+                <q-item-section>
+                  <router-link to="edit-profile">プロフィール設定</router-link>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section>History</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
         </q-btn>
+
         <q-btn flat dense round icon="menu" @click="right = !right" />
 
       </q-toolbar>
@@ -113,7 +139,7 @@
           this.right = false;
           if (this.existUser(result).empty) {
             this.setUserInfo(result);
-            this.$router.push('userId');
+            this.$router.push('edit-profile');
           } else {
             this.$router.push('users');
           }
