@@ -27,7 +27,8 @@
 
 <script>
   import { collection, query, where, getDocs } from 'firebase/firestore';
-  import { db } from '../firebase'
+  import { db } from '../firebase';
+  import { mapGetters } from 'vuex';
 
   const apiURL = 'https://randomuser.me/api/?results=5';
   const apiOption = {
@@ -47,13 +48,17 @@
         this.randomUser = response.results;
       },
       async getUser() {
-        const loginUser = JSON.parse(localStorage.getItem("userInfo"));
+        const loginUser = this.getUserInfo;
         const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
         const queryUser = await getDocs(q);
         queryUser.forEach(doc => {
           this.userList.push(doc.data());
         });
       },
+    },
+
+    computed: {
+      ...mapGetters("user", ["getUserInfo"]),
     },
     created() {
       this.getRandomUser();
@@ -62,8 +67,13 @@
   }
   /*
   ToDo
+  ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
   ・再読み込みのチラツキ（ローディング画面）
   ・詳細ページへのリンク
   ・サンプルの読み込みを1回にする（storeに登録→空なら読み込まない）
+  ・ユーザーIDを設定する
+  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
+  ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
+  ・プロフィール内容をストアに保存
   */
 </script>

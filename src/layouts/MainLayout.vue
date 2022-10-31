@@ -30,7 +30,7 @@
               </q-item>
               <q-item clickable to="message">
                 <q-item-section>
-                   メッセージ
+                  メッセージ
                 </q-item-section>
               </q-item>
               <q-item clickable to="edit-profile">
@@ -80,7 +80,6 @@
   import { auth, db, provider } from '../firebase'
   import { mapActions, mapGetters } from 'vuex'
 
-
   const linksData = [
     {
       title: 'Docs',
@@ -98,68 +97,45 @@
 
   export default {
     name: 'MainLayout',
+
     components: {
       EssentialLink
     },
+
     data() {
       return {
         essentialLinks: linksData
       }
     },
+
     methods: {
       ...mapActions(['increment']),
       ...mapActions('user', ['setIsAuth', 'setLoginUser']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
-          console.log(result)
-
           this.setIsAuth(true);
-          localStorage.setItem("isAuth", true);
-
           this.setLoginUser(result.user);
-          const userInfoString = JSON.stringify(this.getUserInfo);
-          localStorage.setItem("userInfo", userInfoString);
 
-          if (this.existUser(result)) {
-            this.setUserInfo(result);
-            this.$router.push('edit-profile');
-          } else {
-            this.$router.push('search');
-          }
-          /*
-          ①メールアドレスでDBを検索
-          ②-1アドレスが登録されている場合
-          ・store/userにログインユーザーの情報をコミット
-          ②-2アドレスが未登録の場合
-          ・firebaseにアカウント情報を登録
-          ・登録ページヘ遷移
-          ・グーグルアカウントから情報を抜き出し
-          ・登録内容（ニックネーム/画像/生まれ/性別/好みのタイプ/趣味/コメント）を記入
-          ・firebaseを更新
-          ③ログイン完了画面へ遷移（リストページ）
-          */
+          this.searchUser(result);
         });
       },
-      logout() {
-        if(confirm("ログアウトしますか？")) {
-          signOut(auth).then(() => {
-            localStorage.clear()
-            this.setIsAuth(false);
-          });
-          this.$router.push('/');
-        }
-      },
-      async existUser(res) {
+      async searchUser(res) {
         const q = query(collection(db, "users"), where("email", "==", res.user.email));
         const snap = await getDocs(q);
-        return snap.empty;
+
+        if (snap.docs.length === 0) {
+          this.$router.push('edit-profile');
+          this.setUserInfo(res);
+        } else {
+          this.$router.push('search');
+        }
       },
       async setUserInfo(res) {
         // 新規ユーザーをDBに登録
         await addDoc(collection(db, "users"), {
           name: res.user.displayName,
-          img: res.user.photoURL,
+          img: "img/sample-image.jpeg",
           email: res.user.email,
           birth: null,
           gender: "",
@@ -168,10 +144,25 @@
           comment: "",
         })
       },
+      logout() {
+        if (confirm("ログアウトしますか？")) {
+          signOut(auth).then(() => {
+            localStorage.clear()
+            this.setIsAuth(false);
+          });
+          this.$router.push('/');
+        }
+      },
+      holdProfAtReload() {
+        const userInfoString = JSON.stringify(this.getUserInfo);
+        localStorage.setItem("isAuth", true);
+        localStorage.setItem("userInfo", userInfoString);
+      },
       add() {
         this.increment({ value: 10 });
       },
     },
+
     computed: {
       ...mapGetters(['visibleUsers', 'getUserById']),
       ...mapGetters('user', ['getUserInfo']),
@@ -182,9 +173,17 @@
         return this.getUserById(1);
       }
     },
+
     created() {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.setLoginUser(userInfo);
-    }
+      if (userInfo != null) {
+        this.setLoginUser(userInfo);
+      }
+      window.addEventListener("beforeunload", this.holdProfAtReload);
+    },
+
+    mounted() {
+      localStorage.clear();
+    },
   }
 </script>
