@@ -17,7 +17,7 @@ const state = {
 const mutations = {
   setLoginUser(state, user) {
     state.info.displayName = user.displayName;
-    state.info.photoURL = user.photoURL;
+    state.info.photoURL = "img/sample-image.jpeg";
     state.info.email = user.email;
     state.info.birth = user.birth;
     state.info.gender = user.gender;
