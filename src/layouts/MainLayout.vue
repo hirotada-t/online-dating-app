@@ -74,11 +74,11 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue'
-  import { signInWithPopup, signOut } from 'firebase/auth'
+  import EssentialLink from 'components/EssentialLink.vue';
+  import { signInWithPopup, signOut } from 'firebase/auth';
   import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-  import { auth, db, provider } from '../firebase'
-  import { mapActions, mapGetters } from 'vuex'
+  import { auth, db, provider } from '../firebase';
+  import { mapActions, mapGetters } from 'vuex';
 
   const linksData = [
     {

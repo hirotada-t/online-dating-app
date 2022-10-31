@@ -29,6 +29,9 @@
   import { collection, query, where, getDocs } from 'firebase/firestore';
   import { db } from '../firebase';
   import { mapGetters } from 'vuex';
+  import { Loading, QSpinnerGears } from 'quasar';
+
+  Loading.show();
 
   const apiURL = 'https://randomuser.me/api/?results=5';
   const apiOption = {
@@ -43,17 +46,19 @@
       }
     },
     methods: {
-      async getRandomUser() {
-        const response = await fetch(apiURL, apiOption).then(res => res.json());
-        this.randomUser = response.results;
-      },
       async getUser() {
         const loginUser = this.getUserInfo;
         const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
         const queryUser = await getDocs(q);
-        queryUser.forEach(doc => {
-          this.userList.push(doc.data());
-        });
+        const arr = [];
+
+        queryUser.forEach(doc => arr.push(doc.data()));
+        const response = await fetch(apiURL, apiOption).then(res => res.json());
+
+        this.userList = arr;
+        this.randomUser = response.results;
+
+        this.$q.loading.hide();
       },
     },
 
@@ -61,19 +66,17 @@
       ...mapGetters("user", ["getUserInfo"]),
     },
     created() {
-      this.getRandomUser();
       this.getUser();
     },
   }
   /*
   ToDo
   ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
-  ・再読み込みのチラツキ（ローディング画面）
   ・詳細ページへのリンク
   ・サンプルの読み込みを1回にする（storeに登録→空なら読み込まない）
   ・ユーザーIDを設定する
   ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
-  ・プロフィール内容をストアに保存
+  ・プロフィールの内容をストアに保存
   */
 </script>
