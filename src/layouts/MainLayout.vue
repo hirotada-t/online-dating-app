@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue';
+  import EssentialLink from 'components/EssentialLink';
   import { signInWithPopup, signOut } from 'firebase/auth';
   import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
   import { auth, db, provider } from '../firebase';

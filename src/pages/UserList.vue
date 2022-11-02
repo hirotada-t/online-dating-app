@@ -2,7 +2,8 @@
   <q-page class="flex flex-center column">
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
-      <div class="col-3 q-px-sm q-my-sm" v-for="user in userList.registered" :key="user.name">
+      <div class="col-3 q-px-sm q-my-sm" v-for="user in userList.registered" :key="user.name"
+        @click="openDialog = true">
         <q-card>
           <img :src="user.img">
           <q-card-section>
@@ -11,7 +12,8 @@
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-3 q-px-sm q-my-sm" v-for="sample in userList.sample" :key="sample.id.value">
+      <div class="col-3 q-px-sm q-my-sm" v-for="sample in userList.sample" :key="sample.id.value"
+        @click="openDialog = true">
         <q-card>
           <img :src="sample.picture.large">
           <q-card-section>
@@ -20,6 +22,9 @@
           </q-card-section>
         </q-card>
       </div>
+      <q-dialog v-model="openDialog">
+        <UserDetail />
+      </q-dialog>
     </div>
 
   </q-page>
@@ -30,6 +35,7 @@
   import { db } from '../firebase';
   import { mapActions, mapGetters } from 'vuex';
   import { Loading, QSpinnerGears } from 'quasar';
+  import UserDetail from 'components/UserDetail'
 
   const api = {
     url: 'https://randomuser.me/api/?results=5',
@@ -42,8 +48,14 @@
     data() {
       return {
         userList: {},
+        openDialog: false,
       }
     },
+
+    components: {
+      UserDetail
+    },
+
     methods: {
       ...mapActions("user", ["setRegistered", "setSample"]),
       async getUser() {
@@ -106,6 +118,7 @@
   .q-card {
     transition: all .3s;
     cursor: pointer;
+
     &:hover {
       transform: translate(3px, -5px);
     }
