@@ -44,14 +44,6 @@
                 </q-item-section>
               </q-item>
               <q-separator />
-              <ul>
-                <li v-for="user of visibleUsers" :key="user.id">
-                  {{user.id}} / {{user.name}} / {{user.isVisible}}
-                </li>
-              </ul>
-              <p>{{getTestUserById}}</p>
-              {{$store.state.count}}
-              <q-btn @click="add">count up</q-btn>
               <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
             </q-list>
           </q-menu>
@@ -74,7 +66,7 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue';
+  import EssentialLink from 'components/EssentialLink';
   import { signInWithPopup, signOut } from 'firebase/auth';
   import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
   import { auth, db, provider } from '../firebase';
@@ -109,8 +101,7 @@
     },
 
     methods: {
-      ...mapActions(['increment']),
-      ...mapActions('user', ['setIsAuth', 'setLoginUser']),
+      ...mapActions('user', ['setIsAuth', 'setLoginUser', 'reset']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
@@ -147,38 +138,36 @@
       logout() {
         if (confirm("ログアウトしますか？")) {
           signOut(auth).then(() => {
-            localStorage.clear()
-            this.setIsAuth(false);
+            localStorage.clear();
+            this.reset();
           });
           this.$router.push('/');
         }
       },
       holdProfAtReload() {
         const userInfoString = JSON.stringify(this.getUserInfo);
-        localStorage.setItem("isAuth", true);
+        const isAuthString = JSON.stringify(this.getIsAuth);
+        localStorage.setItem("isAuth", isAuthString);
         localStorage.setItem("userInfo", userInfoString);
-      },
-      add() {
-        this.increment({ value: 10 });
       },
     },
 
     computed: {
-      ...mapGetters(['visibleUsers', 'getUserById']),
-      ...mapGetters('user', ['getUserInfo']),
-      // getTestUsers() {
-      //   return this.$store.getters.visibleUsers;
-      // },
+      ...mapGetters('user', ['getUserInfo', 'getIsAuth']),
       getTestUserById() {
         return this.getUserById(1);
       }
     },
 
     created() {
+      // ログインユーザー情報が保存されている時は内容をストアで受け取る
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (userInfo != null) {
+      const isAuth = JSON.parse(localStorage.getItem("isAuth"));
+      if (isAuth) {
+        this.setIsAuth(isAuth);
         this.setLoginUser(userInfo);
       }
+      // 更新する直前でログイン状況とログインユーザーの情報を保存する
       window.addEventListener("beforeunload", this.holdProfAtReload);
     },
 

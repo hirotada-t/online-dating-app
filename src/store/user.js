@@ -1,5 +1,5 @@
 const state = {
-  isAuth: localStorage.getItem("isAuth"),
+  isAuth: false,
   info: {
     displayName: "",
     photoURL: "",
@@ -10,8 +10,10 @@ const state = {
     hobby: "",
     comment: "",
   },
-  sample: [],
-  sampleLoaded: false,
+  userList: {
+    registered: [],
+    sample: [],
+  },
 }
 
 const mutations = {
@@ -28,17 +30,24 @@ const mutations = {
   setIsAuth(state, user) {
     state.isAuth = user;
   },
-  setSampleUser(state, user) {
-    state.sample = user;
+  setRegistered(state, user) {
+    state.userList.registered = user;
   },
-  setSampleLoaded(state) {
-    state.sampleLoaded = true;
+  setSample(state, user) {
+    state.userList.sample = user;
+  },
+  reset(state) {
+    state.isAuth = false;
+    state.info = {}
+    state.userList.registered = [];
+    state.userList.sample = [];
   }
 }
 
 const getters = {
+  getIsAuth: state => state.isAuth,
   getUserInfo: state => state.info,
-  getSampleLoaded: state => state.sampleLoaded,
+  getUserList: state => state.userList,
 }
 
 const actions = {
@@ -48,11 +57,14 @@ const actions = {
   setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
   },
-  setSampleUser({commit}, user) {
-    commit('setSampleUser', user);
+  setRegistered({ commit }, user) {
+    commit('setRegistered', user);
   },
-  setSampleLoaded({commit}) {
-    commit('setSampleLoaded')
+  setSample({ commit }, user) {
+    commit('setSample', user);
+  },
+  reset({ commit }) {
+    commit('reset');
   }
 }
 
