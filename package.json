@@ -15,7 +15,8 @@
     "core-js": "^3.6.5",
     "firebase": "^9.12.1",
     "firebaseui": "^6.0.1",
-    "quasar": "^1.0.0"
+    "quasar": "^1.0.0",
+    "vuex-extensions": "^4.0.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",

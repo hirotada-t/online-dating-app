@@ -110,7 +110,7 @@
 
     methods: {
       ...mapActions(['increment']),
-      ...mapActions('user', ['setIsAuth', 'setLoginUser']),
+      ...mapActions('user', ['setIsAuth', 'setLoginUser', 'reset']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
@@ -147,8 +147,8 @@
       logout() {
         if (confirm("ログアウトしますか？")) {
           signOut(auth).then(() => {
-            localStorage.clear()
-            this.setIsAuth(false);
+            localStorage.clear();
+            this.reset();
           });
           this.$router.push('/');
         }
@@ -175,10 +175,12 @@
     },
 
     created() {
+      // ログインユーザー情報が保存されている時は内容をストアで受け取る
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       if (userInfo != null) {
         this.setLoginUser(userInfo);
       }
+      // 更新する直前でログイン状況とログインユーザーの情報を保存する
       window.addEventListener("beforeunload", this.holdProfAtReload);
     },
 

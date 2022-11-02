@@ -10,8 +10,10 @@ const state = {
     hobby: "",
     comment: "",
   },
-  sample: [],
-  sampleLoaded: false,
+  userList: {
+    registered: [],
+    sample: [],
+  },
 }
 
 const mutations = {
@@ -31,14 +33,22 @@ const mutations = {
   setSampleUser(state, user) {
     state.sample = user;
   },
-  setSampleLoaded(state) {
-    state.sampleLoaded = true;
+  setRegistered(state, user) {
+    state.userList.registered = user;
+  },
+  setSample(state, user) {
+    state.userList.sample = user;
+  },
+  reset(state) {
+    state.isAuth = false;
+    state.userList.registered = [];
+    state.userList.sample = [];
   }
 }
 
 const getters = {
   getUserInfo: state => state.info,
-  getSampleLoaded: state => state.sampleLoaded,
+  getUserList: state => state.userList,
 }
 
 const actions = {
@@ -48,11 +58,17 @@ const actions = {
   setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
   },
-  setSampleUser({commit}, user) {
+  setSampleUser({ commit }, user) {
     commit('setSampleUser', user);
   },
-  setSampleLoaded({commit}) {
-    commit('setSampleLoaded')
+  setRegistered({ commit }, user) {
+    commit('setRegistered', user);
+  },
+  setSample({ commit }, user) {
+    commit('setSample', user);
+  },
+  reset({commit}) {
+    commit('reset');
   }
 }
 
