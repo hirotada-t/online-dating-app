@@ -21,10 +21,10 @@
             <div class="text-subtitle2">age: {{sample.dob.age}}</div>
           </q-card-section>
         </q-card>
+        <q-dialog v-model="openDialog">
+          <UserDetail :detail="clickedUserInfo" />
+        </q-dialog>
       </div>
-      <q-dialog v-model="openDialog">
-        <UserDetail />
-      </q-dialog>
     </div>
 
   </q-page>
@@ -48,6 +48,7 @@
     data() {
       return {
         userList: {},
+        clickedUserInfo:{},
         openDialog: false,
       }
     },
@@ -82,6 +83,9 @@
 
     computed: {
       ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      propClickUser() {
+        return false;
+      },
     },
 
     created() {

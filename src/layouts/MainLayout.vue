@@ -155,7 +155,8 @@
       },
       holdProfAtReload() {
         const userInfoString = JSON.stringify(this.getUserInfo);
-        localStorage.setItem("isAuth", true);
+        const isAuthString = JSON.stringify(this.getIsAuth);
+        localStorage.setItem("isAuth", isAuthString);
         localStorage.setItem("userInfo", userInfoString);
       },
       add() {
@@ -165,7 +166,7 @@
 
     computed: {
       ...mapGetters(['visibleUsers', 'getUserById']),
-      ...mapGetters('user', ['getUserInfo']),
+      ...mapGetters('user', ['getUserInfo', 'getIsAuth']),
       // getTestUsers() {
       //   return this.$store.getters.visibleUsers;
       // },
@@ -177,7 +178,9 @@
     created() {
       // ログインユーザー情報が保存されている時は内容をストアで受け取る
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (userInfo != null) {
+      const isAuth = JSON.parse(localStorage.getItem("isAuth"));
+      if (isAuth) {
+        this.setIsAuth(isAuth);
         this.setLoginUser(userInfo);
       }
       // 更新する直前でログイン状況とログインユーザーの情報を保存する

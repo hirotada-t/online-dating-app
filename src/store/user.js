@@ -1,5 +1,5 @@
 const state = {
-  isAuth: localStorage.getItem("isAuth"),
+  isAuth: false,
   info: {
     displayName: "",
     photoURL: "",
@@ -38,12 +38,14 @@ const mutations = {
   },
   reset(state) {
     state.isAuth = false;
+    state.info = {}
     state.userList.registered = [];
     state.userList.sample = [];
   }
 }
 
 const getters = {
+  getIsAuth: state => state.isAuth,
   getUserInfo: state => state.info,
   getUserList: state => state.userList,
 }
@@ -61,7 +63,7 @@ const actions = {
   setSample({ commit }, user) {
     commit('setSample', user);
   },
-  reset({commit}) {
+  reset({ commit }) {
     commit('reset');
   }
 }
