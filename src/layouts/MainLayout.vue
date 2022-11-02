@@ -44,14 +44,6 @@
                 </q-item-section>
               </q-item>
               <q-separator />
-              <ul>
-                <li v-for="user of visibleUsers" :key="user.id">
-                  {{user.id}} / {{user.name}} / {{user.isVisible}}
-                </li>
-              </ul>
-              <p>{{getTestUserById}}</p>
-              {{$store.state.count}}
-              <q-btn @click="add">count up</q-btn>
               <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
             </q-list>
           </q-menu>
@@ -109,7 +101,6 @@
     },
 
     methods: {
-      ...mapActions(['increment']),
       ...mapActions('user', ['setIsAuth', 'setLoginUser', 'reset']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
@@ -159,17 +150,10 @@
         localStorage.setItem("isAuth", isAuthString);
         localStorage.setItem("userInfo", userInfoString);
       },
-      add() {
-        this.increment({ value: 10 });
-      },
     },
 
     computed: {
-      ...mapGetters(['visibleUsers', 'getUserById']),
       ...mapGetters('user', ['getUserInfo', 'getIsAuth']),
-      // getTestUsers() {
-      //   return this.$store.getters.visibleUsers;
-      // },
       getTestUserById() {
         return this.getUserById(1);
       }

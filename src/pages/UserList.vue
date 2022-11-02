@@ -12,8 +12,8 @@
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-3 q-px-sm q-my-sm" v-for="sample in userList.sample" :key="sample.id.value"
-        @click="openDialog = true">
+      <div class="col-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample" :key="sample.id.value"
+        @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="sample.picture.large">
           <q-card-section>
@@ -48,7 +48,7 @@
     data() {
       return {
         userList: {},
-        clickedUserInfo:{},
+        clickedUserInfo: {},
         openDialog: false,
       }
     },
@@ -75,6 +75,11 @@
         this.setSample(response.results);
         this.setRegistered(arr);
       },
+      propClickUser(e) {
+        const index = e.target.closest(".sample-user").dataset.key;
+        this.clickedUserInfo = this.userList.sample[index];
+        this.openDialog = true;
+      },
       holdUsersAtReload() {
         const userListString = JSON.stringify(this.getUserList);
         localStorage.setItem("userList", userListString);
@@ -83,9 +88,6 @@
 
     computed: {
       ...mapGetters("user", ["getUserInfo", "getUserList"]),
-      propClickUser() {
-        return false;
-      },
     },
 
     created() {
