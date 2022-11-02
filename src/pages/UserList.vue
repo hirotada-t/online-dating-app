@@ -2,8 +2,8 @@
   <q-page class="flex flex-center column">
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
-      <div class="col-3 q-px-sm q-my-sm" v-for="user in userList.registered" :key="user.name"
-        @click="openDialog = true">
+      <div class="col-3 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
+        @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="user.img">
           <q-card-section>
@@ -21,10 +21,10 @@
             <div class="text-subtitle2">age: {{sample.dob.age}}</div>
           </q-card-section>
         </q-card>
-        <q-dialog v-model="openDialog">
-          <UserDetail :detail="clickedUserInfo" />
-        </q-dialog>
       </div>
+      <q-dialog v-model="openDialog">
+        <UserDetail :detail="clickedUserInfo" />
+      </q-dialog>
     </div>
 
   </q-page>
@@ -76,8 +76,15 @@
         this.setRegistered(arr);
       },
       propClickUser(e) {
-        const index = e.target.closest(".sample-user").dataset.key;
-        this.clickedUserInfo = this.userList.sample[index];
+        const target = e.target.closest(".sample-user");
+        let index;
+        if (target == null) {
+          index = e.target.closest(".registered-user").dataset.key;
+          this.clickedUserInfo = this.userList.registered[index];
+        } else {
+          index = target.dataset.key;
+          this.clickedUserInfo = this.userList.sample[index];
+        }
         this.openDialog = true;
       },
       holdUsersAtReload() {
@@ -116,7 +123,7 @@
   ・ユーザーIDを設定する（ドキュメントID）
   ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
-  ・プロフィールの内容をストアに保存
+  ・プロフィールの更新内容をストアに保存
   */
 </script>
 
