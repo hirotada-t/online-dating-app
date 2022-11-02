@@ -30,9 +30,6 @@ const mutations = {
   setIsAuth(state, user) {
     state.isAuth = user;
   },
-  setSampleUser(state, user) {
-    state.sample = user;
-  },
   setRegistered(state, user) {
     state.userList.registered = user;
   },
@@ -57,9 +54,6 @@ const actions = {
   },
   setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
-  },
-  setSampleUser({ commit }, user) {
-    commit('setSampleUser', user);
   },
   setRegistered({ commit }, user) {
     commit('setRegistered', user);

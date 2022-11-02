@@ -73,16 +73,15 @@
     },
 
     created() {
-      this.$q.loading.show({
-        delay: 400 // ms
-      });
+      this.$q.loading.show();
       const userList = JSON.parse(localStorage.getItem("userList"));
+      const storeUserList = this.getUserList;
       if (userList != null) {
         // ユーザーリストが保存されている時は内容をストアで受け取る
         this.setRegistered(userList.registered);
         this.setSample(userList.sample);
-      } else {
-        // ユーザーリストが無い場合は読み込みを実行する
+      } else if (storeUserList.registered.length === 0 || storeUserList.sample.length === 0) {
+        // ストアにユーザーリストが無い場合は読み込みを実行する
         this.getUser();
       }
       this.userList = this.getUserList;
