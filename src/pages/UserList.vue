@@ -86,6 +86,7 @@
       }
       this.userList = this.getUserList;
       this.$q.loading.hide();
+      console.log(this.userList)
       // 更新する直前でユーザーリストを保存する
       window.addEventListener("beforeunload", this.holdUsersAtReload);
     },
@@ -94,10 +95,19 @@
   ToDo
   ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
   ・詳細ページへのリンク
-  ・サンプルの読み込みを1回にする（storeに登録→空なら読み込まない）
   ・ユーザーIDを設定する（ドキュメントID）
   ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
   ・プロフィールの内容をストアに保存
   */
 </script>
+
+<style lang="scss">
+  .q-card {
+    transition: all .3s;
+    cursor: pointer;
+    &:hover {
+      transform: translate(3px, -5px);
+    }
+  }
+</style>
