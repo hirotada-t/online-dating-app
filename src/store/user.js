@@ -3,7 +3,7 @@ const state = {
   info: {
     displayName: "",
     photoURL: "",
-    email: "",
+    uid: "",
     birth: null,
     gender: "",
     preferredType: "",
@@ -20,7 +20,7 @@ const mutations = {
   setLoginUser(state, user) {
     state.info.displayName = user.displayName;
     state.info.photoURL = "img/sample-image.jpeg";
-    state.info.email = user.email;
+    state.info.uid = user.uid;
     state.info.birth = user.birth;
     state.info.gender = user.gender;
     state.info.preferredType = user.preferredType;

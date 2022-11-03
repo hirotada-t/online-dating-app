@@ -105,6 +105,7 @@
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
           // サインイン→ストレージに保存→（新規登録）→画面遷移
+          console.log(result)
           this.setIsAuth(true);
           this.setLoginUser(result.user);
 
@@ -112,7 +113,7 @@
         });
       },
       async searchUser(res) {
-        const q = query(collection(db, "users"), where("email", "==", res.user.email));
+        const q = query(collection(db, "users"), where("uid", "==", res.user.uid));
         const snap = await getDocs(q);
 
         if (snap.docs.length === 0) {
@@ -127,7 +128,7 @@
         await addDoc(collection(db, "users"), {
           name: res.user.displayName,
           img: "img/sample-image.jpeg",
-          email: res.user.email,
+          uid: res.user.uid,
           birth: null,
           gender: "",
           preferredType: "",
@@ -154,9 +155,6 @@
 
     computed: {
       ...mapGetters('user', ['getUserInfo', 'getIsAuth']),
-      getTestUserById() {
-        return this.getUserById(1);
-      }
     },
 
     created() {

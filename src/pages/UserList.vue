@@ -61,9 +61,10 @@
       ...mapActions("user", ["setRegistered", "setSample"]),
       async getUser() {
         const loginUser = this.getUserInfo;
-        const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
+        const q = query(collection(db, "users"), where("uid", "!=", loginUser.uid));
         const queryUser = await getDocs(q);
         const arr = [];
+        console.log(queryUser)
         queryUser.forEach(doc => arr.push(doc.data()));
 
         let response = this.getUserList.sample;
@@ -119,8 +120,7 @@
   /*
   ToDo
   ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
-  ・詳細ページへのリンク
-  ・ユーザーIDを設定する（ドキュメントID）
+  ・詳細ページの作成
   ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
   ・プロフィールの更新内容をストアに保存
