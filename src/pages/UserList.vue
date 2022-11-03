@@ -1,5 +1,6 @@
 <template>
   <q-page class="flex flex-center column">
+
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
       <div class="col-3 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
@@ -7,8 +8,13 @@
         <q-card>
           <img :src="user.img">
           <q-card-section>
+            <div class="balloon">一言コメント・PR</div>
             <div class="text-h6">{{user.name}}</div>
-            <div class="text-subtitle2">age: {{user.birth}}</div>
+            <div class="text-subtitle2">
+              age:
+              <span v-if="user.birth === null">---</span>
+              <span v-else>{{user.birth}}</span>
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -17,6 +23,7 @@
         <q-card>
           <img :src="sample.picture.large">
           <q-card-section>
+            <div class="balloon">一言コメント・PR</div>
             <div class="text-h6">{{sample.name.first}}(Sample)</div>
             <div class="text-subtitle2">age: {{sample.dob.age}}</div>
           </q-card-section>
@@ -61,9 +68,10 @@
       ...mapActions("user", ["setRegistered", "setSample"]),
       async getUser() {
         const loginUser = this.getUserInfo;
-        const q = query(collection(db, "users"), where("email", "!=", loginUser.email));
+        const q = query(collection(db, "users"), where("uid", "!=", loginUser.uid));
         const queryUser = await getDocs(q);
         const arr = [];
+        console.log(queryUser)
         queryUser.forEach(doc => arr.push(doc.data()));
 
         let response = this.getUserList.sample;
@@ -118,12 +126,13 @@
   }
   /*
   ToDo
-  ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
-  ・詳細ページへのリンク
-  ・ユーザーIDを設定する（ドキュメントID）
-  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
+  ★ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
+  ・詳細ページの作成
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
   ・プロフィールの更新内容をストアに保存
+  ・マッチングの仕組み
+  ・マッチングしたユーザー同士でのメッセージのやりとり
+  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   */
 </script>
 
@@ -134,6 +143,26 @@
 
     &:hover {
       transform: translate(3px, -5px);
+    }
+  }
+
+  .balloon {
+    position: relative;
+    padding: 10px;
+    background-color: #bdffad;
+    box-shadow: 0px 0px 10px 0px #a7a7a7;
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      left: 20px;
+      top: -15px;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid #bdffad;
+      border-left: 15px solid transparent;
     }
   }
 </style>

@@ -15,7 +15,7 @@
     name: 'UserDetail',
     props: {
       detail: {
-        type:Object,
+        type: Object,
       }
     },
     data() {
@@ -25,3 +25,13 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+  .q-card {
+    cursor: default;
+
+    &:hover {
+      transform: translate(0, 0);
+    }
+  }
+</style>
