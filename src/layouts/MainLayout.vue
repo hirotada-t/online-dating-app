@@ -51,13 +51,6 @@
 
       </q-toolbar>
     </q-header>
-    <q-drawer show-if-above side="left">
-      <!-- drawer content -->
-    </q-drawer>
-
-    <q-drawer show-if-above side="right">
-      <!-- drawer content -->
-    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -174,3 +167,9 @@
     },
   }
 </script>
+<style lang="scss">
+  .q-page-container {
+    max-width: 1200px;
+    margin: auto;
+  }
+</style>

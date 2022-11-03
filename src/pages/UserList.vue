@@ -1,8 +1,9 @@
 <template>
   <q-page class="flex flex-center column">
+
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
-      <div class="col-4 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
+      <div class="col-3 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
         @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="user.img">
@@ -17,7 +18,7 @@
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-4 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample" :key="sample.id.value"
+      <div class="col-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample" :key="sample.id.value"
         @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="sample.picture.large">
@@ -142,6 +143,26 @@
 
     &:hover {
       transform: translate(3px, -5px);
+    }
+  }
+
+  .balloon {
+    position: relative;
+    padding: 10px;
+    background-color: #bdffad;
+    box-shadow: 0px 0px 10px 0px #a7a7a7;
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      left: 20px;
+      top: -15px;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid #bdffad;
+      border-left: 15px solid transparent;
     }
   }
 </style>
