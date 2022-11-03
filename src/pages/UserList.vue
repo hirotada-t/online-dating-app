@@ -2,21 +2,27 @@
   <q-page class="flex flex-center column">
     <h2>UserList</h2>
     <div class="q-pa-md row flex-start">
-      <div class="col-3 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
+      <div class="col-4 q-px-sm q-my-sm registered-user" v-for="(user, index) in userList.registered" :key="user.name"
         @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="user.img">
           <q-card-section>
+            <div class="balloon">一言コメント・PR</div>
             <div class="text-h6">{{user.name}}</div>
-            <div class="text-subtitle2">age: {{user.birth}}</div>
+            <div class="text-subtitle2">
+              age:
+              <span v-if="user.birth === null">---</span>
+              <span v-else>{{user.birth}}</span>
+            </div>
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample" :key="sample.id.value"
+      <div class="col-4 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample" :key="sample.id.value"
         @click="(e) => propClickUser(e)" :data-key="index">
         <q-card>
           <img :src="sample.picture.large">
           <q-card-section>
+            <div class="balloon">一言コメント・PR</div>
             <div class="text-h6">{{sample.name.first}}(Sample)</div>
             <div class="text-subtitle2">age: {{sample.dob.age}}</div>
           </q-card-section>
@@ -119,11 +125,13 @@
   }
   /*
   ToDo
-  ・ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
+  ★ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
   ・詳細ページの作成
-  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
   ・プロフィールの更新内容をストアに保存
+  ・マッチングの仕組み
+  ・マッチングしたユーザー同士でのメッセージのやりとり
+  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   */
 </script>
 
