@@ -8,6 +8,7 @@ const routes = [
       { path: 'search', component: () => import('pages/UserList.vue') },
       { path: 'edit-profile', component: () => import('pages/EditProfile.vue') },
       { path: 'message', component: () => import('pages/MessageList.vue') },
+      { path: 'contact', component: () => import('pages/Contact.vue') },
     ]
   },
 

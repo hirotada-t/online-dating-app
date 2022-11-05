@@ -6,7 +6,7 @@
         <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
 
           <q-list padding>
-            <q-item active clickable v-ripple>
+            <q-item clickable v-ripple href="#profile">
               <q-item-section avatar>
                 <q-icon name="fa-regular fa-circle-user" />
               </q-item-section>
@@ -15,7 +15,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item active clickable v-ripple href="#introduction">
               <q-item-section avatar>
                 <q-icon name="star" />
               </q-item-section>
@@ -41,6 +41,12 @@
                 退会する
               </q-item-section>
             </q-item>
+
+            <q-separator />
+
+            <q-item class="flex flex-center q-mt-md">
+              <q-btn label="保存する" type="submit" color="primary" size="15px" class="q-px-lg" />
+            </q-item>
           </q-list>
         </q-scroll-area>
 
@@ -55,7 +61,7 @@
         </q-img>
       </q-drawer>
 
-      <q-page-container>
+      <q-page-container id="profile">
         <q-page padding>
           <div class="q-pa-md">
             <q-form class="q-gutter-md">
@@ -69,25 +75,15 @@
                   <q-icon name="fa-regular fa-image" />
                 </template>
               </q-file>
-              <div class="flex justify-center">
-                <q-btn label="Submit" type="submit" color="primary" size="20px" class="q-px-xl q-py-xs" />
-              </div>
-            </q-form>
-          </div>
-          <!-- <div class="q-pa-md">
-            <q-form class="q-gutter-md">
-              <h3 class="q-mb-sm q-mt-xl">自己PR</h3>
+              <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
               <q-separator inset />
               <q-input filled v-model="pr" label="ひとことPR" />
               <q-input filled v-model="preference" label="好みのタイプ" />
               <q-input filled v-model="work" label="仕事" />
               <q-input filled v-model="hobby" label="趣味" />
-              <q-input filled v-model="introduction" label="自己紹介" />
-              <div class="flex justify-center">
-                <q-btn label="Submit" type="submit" color="primary" size="20px" class="q-px-xl q-py-xs" />
-              </div>
+              <q-input filled v-model="introduction" type="textarea" label="自己紹介" />
             </q-form>
-          </div> -->
+          </div>
         </q-page>
       </q-page-container>
     </q-layout>
@@ -104,6 +100,8 @@
         userInfo: {},
         options: ["", "男性", "女性"],
         drawer: true,
+        prof: true,
+        intro: false,
       }
     },
 
