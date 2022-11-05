@@ -21,21 +21,33 @@
           </q-item>
           <q-separator />
           <q-item clickable to="search">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-magnifying-glass" />
+            </q-item-section>
             <q-item-section>
               ユーザーを探す
             </q-item-section>
           </q-item>
           <q-item clickable to="message">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-comments" />
+            </q-item-section>
             <q-item-section>
               メッセージ
             </q-item-section>
           </q-item>
           <q-item clickable to="edit-profile">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-gears" />
+            </q-item-section>
             <q-item-section>
-              プロフィール設定
+              設定
             </q-item-section>
           </q-item>
           <q-item clickable @click="logout">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-right-from-bracket" />
+            </q-item-section>
             <q-item-section>
               <q-item-label>ログアウト</q-item-label>
             </q-item-section>

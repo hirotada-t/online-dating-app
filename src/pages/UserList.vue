@@ -74,10 +74,10 @@
     methods: {
       ...mapActions("user", ["setRegistered", "setSample"]),
       async getUser() {
+        const arr = [];
         const loginUser = this.getUserInfo;
         const q = query(collection(db, "users"), where("uid", "!=", loginUser.uid));
         const queryUser = await getDocs(q);
-        const arr = [];
         queryUser.forEach(doc => arr.push(doc.data()));
 
         const response = await fetch(api.url, api.option).then(res => res.json());
