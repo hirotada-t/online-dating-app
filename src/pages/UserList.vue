@@ -10,15 +10,15 @@
           <q-card class="row">
             <img :src="user.img" class="col-5 col-sm-12 q-px-md q-pt-md">
             <q-card-section class="order-sm-last col-7 col-sm-12">
-              <div class="text-h6">{{user.name}}</div>
-              <div class="text-subtitle2">
+              <div class="text-h6 over-text-hidden">{{user.name}}</div>
+              <div class="text-subtitle2 over-text-hidden">
                 age:
                 <span v-if="user.birth === null">---</span>
                 <span v-else>{{user.birth}}</span>
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon">一言コメント・PR</div>
+              <div class="balloon over-text-hidden">一言コメント・PR</div>
             </q-card-section>
           </q-card>
         </div>
@@ -27,11 +27,11 @@
           <q-card class="row">
             <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md">
             <q-card-section class="order-sm-last col-7 col-sm-12">
-              <div class="text-h6">{{sample.name.first}}(Sample)</div>
-              <div class="text-subtitle2">age: {{sample.dob.age}}</div>
+              <div class="text-h6 over-text-hidden">{{sample.name.first}}(Sample)</div>
+              <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon">一言コメント・PR</div>
+              <div class="balloon over-text-hidden">一言コメント・PR</div>
             </q-card-section>
           </q-card>
         </div>
@@ -174,5 +174,11 @@
       border-bottom: 15px solid #bdffad;
       border-left: 15px solid transparent;
     }
+  }
+
+  .over-text-hidden {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 </style>
