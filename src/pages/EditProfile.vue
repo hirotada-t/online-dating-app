@@ -45,7 +45,7 @@
             <q-separator />
 
             <q-item class="flex flex-center q-mt-md">
-              <q-btn label="保存する" type="submit" color="primary" size="15px" class="q-px-lg" />
+              <q-btn label="保存する" type="submit" color="primary" size="15px" class="q-px-lg" @click="updateInfo()" />
             </q-item>
           </q-list>
         </q-scroll-area>
@@ -81,7 +81,7 @@
               <h3 class="q-mb-sm">基本情報</h3>
               <q-separator inset />
               <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
-              <q-input filled v-model="userInfo.birth" label="生年月日" type="date" />
+              <q-input filled v-model="userInfo.birth" label="" type="date" />
               <q-select filled v-model="userInfo.gender" :options="options" label="性別" />
               <q-file filled v-model="userInfo.photoURL" accept=".jpg, image/*" @rejected="onRejected">
                 <template v-slot:prepend>
@@ -108,6 +108,7 @@
   import { signOut } from 'firebase/auth';
   import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
   import { auth, db } from '../firebase';
+  import { Notify } from 'quasar';
 
   export default {
     name: 'EditProfile',
@@ -123,7 +124,7 @@
     },
 
     methods: {
-      ...mapActions("user", ["setRegistered", "setSample", "reset"]),
+      ...mapActions("user", ["setLoginUser", "reset"]),
       onSubmit() {
         if (this.accept !== true) {
           this.$q.notify({
@@ -158,6 +159,15 @@
           this.reset();
         });
         this.$router.push('/');
+      },
+      updateInfo() {
+        this.setLoginUser(this.userInfo);
+        // DBを更新
+        this.$q.notify({
+          message: 'データを更新しました。',
+          color: 'primary',
+          timeout: 1500,
+        })
       },
     },
 
