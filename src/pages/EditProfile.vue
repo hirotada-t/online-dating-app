@@ -24,7 +24,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple to="contact">
               <q-item-section avatar>
                 <q-icon name="send" />
               </q-item-section>
@@ -33,7 +33,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple @click="openDialog = true">
               <q-item-section avatar>
                 <q-icon name="fa-regular fa-face-sad-tear" />
               </q-item-section>
@@ -61,6 +61,19 @@
         </q-img>
       </q-drawer>
 
+      <q-dialog v-model="openDialog">
+        <q-card>
+          <q-card-section class="row items-center">
+            アカウントを削除して退会します。<br>
+            本当によろしいですか？
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancel" color="primary" v-close-popup />
+            <q-btn label="退会する" color="negative" v-close-popup class="q-px-md" @click="withdrawal" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
       <q-page-container id="profile">
         <q-page padding>
           <div class="q-pa-md">
@@ -77,11 +90,11 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
               <q-separator inset />
-              <q-input filled v-model="pr" label="ひとことPR" />
+              <!-- <q-input filled v-model="pr" label="ひとことPR" />
               <q-input filled v-model="preference" label="好みのタイプ" />
               <q-input filled v-model="work" label="仕事" />
               <q-input filled v-model="hobby" label="趣味" />
-              <q-input filled v-model="introduction" type="textarea" label="自己紹介" />
+              <q-input filled v-model="introduction" type="textarea" label="自己紹介" /> -->
             </q-form>
           </div>
         </q-page>
@@ -92,6 +105,9 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex';
+  import { signOut } from 'firebase/auth';
+  import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+  import { auth, db } from '../firebase';
 
   export default {
     name: 'EditProfile',
@@ -102,11 +118,12 @@
         drawer: true,
         prof: true,
         intro: false,
+        openDialog: false,
       }
     },
 
     methods: {
-      ...mapActions("user", ["setRegistered", "setSample"]),
+      ...mapActions("user", ["setRegistered", "setSample", "reset"]),
       onSubmit() {
         if (this.accept !== true) {
           this.$q.notify({
@@ -130,7 +147,18 @@
           type: 'negative',
           message: "画像を選択してください"
         })
-      }
+      },
+      async withdrawal() {
+        const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
+        const docRef = await getDocs(q);
+        const id = docRef.docs[0].id;
+        await deleteDoc(doc(db, "users", id));
+        signOut(auth).then(() => {
+          localStorage.clear();
+          this.reset();
+        });
+        this.$router.push('/');
+      },
     },
 
     computed: {
