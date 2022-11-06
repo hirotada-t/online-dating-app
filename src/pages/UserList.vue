@@ -13,8 +13,8 @@
               <div class="text-h6 over-text-hidden">{{user.name}}</div>
               <div class="text-subtitle2 over-text-hidden">
                 age:
-                <span v-if="user.birth === null">---</span>
-                <span v-else>{{user.birth}}</span>
+                <span v-if="user.age === 0">---</span>
+                <span v-else>{{user.age}}</span>
               </div>
             </q-card-section>
             <q-card-section class="col">

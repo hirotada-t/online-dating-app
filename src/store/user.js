@@ -4,7 +4,7 @@ const state = {
     displayName: "",
     photoURL: "",
     uid: "",
-    birth: null,
+    age: 0,
     gender: "",
     preferredType: "",
     hobby: "",

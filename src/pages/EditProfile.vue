@@ -81,9 +81,23 @@
               <h3 class="q-mb-sm">基本情報</h3>
               <q-separator inset />
               <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
-              <q-input filled v-model="userInfo.birth" label="" type="date" />
+              <q-input filled v-model="userBirth" :rules="[
+              val => val.slice(0, 4) < year || val.slice(5, 7) < month || val.slice(8, 10) < date || '過去の日付を入力してください。'
+              ]">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="userBirth" mask="YYYY-MM-DD">
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Close" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
               <q-select filled v-model="userInfo.gender" :options="options" label="性別" />
-              <q-file filled v-model="userInfo.photoURL" accept=".jpg, image/*" @rejected="onRejected">
+              <q-file filled v-model="userInfo.photoURL" accept=".jpg, image/*" @rejected="imgRejected">
                 <template v-slot:prepend>
                   <q-icon name="fa-regular fa-image" />
                 </template>
@@ -106,20 +120,22 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import { signOut } from 'firebase/auth';
-  import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+  import { setDoc, collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
   import { auth, db } from '../firebase';
-  import { Notify } from 'quasar';
+  import { Notify, date } from 'quasar';
 
   export default {
     name: 'EditProfile',
     data() {
       return {
         userInfo: {},
+        userBirth: "",
         options: ["", "男性", "女性"],
         drawer: true,
-        prof: true,
-        intro: false,
         openDialog: false,
+        year: date.formatDate(Date.now(), 'YYYY'),
+        month: date.formatDate(Date.now(), 'MM'),
+        date: date.formatDate(Date.now(), 'DD'),
       }
     },
 
@@ -143,7 +159,13 @@
           })
         }
       },
-      onRejected(rejectedEntries) {
+      imgRejected(rejectedEntries) {
+        this.$q.notify({
+          type: 'negative',
+          message: "画像を選択してください"
+        })
+      },
+      birthRejected(rejectedEntries) {
         this.$q.notify({
           type: 'negative',
           message: "画像を選択してください"
@@ -160,14 +182,33 @@
         });
         this.$router.push('/');
       },
-      updateInfo() {
+      async updateInfo() {
+        if (this.userBirth) this.birthToAge();
         this.setLoginUser(this.userInfo);
-        // DBを更新
+
+        const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
+        const docRef = await getDocs(q);
+        const id = docRef.docs[0].id;
+
+        await setDoc(doc(db, "users", id), {
+          name: this.getUserInfo.displayName,
+          gender: this.validateInfo(this.userInfo.gender),
+          age: this.validateInfo(this.userInfo.age),
+        }, { merge: true });
         this.$q.notify({
           message: 'データを更新しました。',
           color: 'primary',
           timeout: 1500,
         })
+      },
+      validateInfo(value) {
+        return typeof value === "undefined" ? "" : value;
+      },
+      birthToAge() {
+        this.userInfo.age = this.year - this.userBirth.slice(0, 4);
+        if (this.month - this.userBirth.slice(5, 7) < 0 || this.date - this.userBirth.slice(8, 10) < 0) {
+          this.userInfo.age--;
+        }
       },
     },
 

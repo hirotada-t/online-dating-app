@@ -131,7 +131,7 @@
           name: res.user.displayName,
           img: "img/sample-image.jpeg",
           uid: res.user.uid,
-          birth: null,
+          age: 0,
           gender: "",
           preferredType: "",
           hobby: "",
