@@ -191,7 +191,7 @@
         const id = docRef.docs[0].id;
 
         await setDoc(doc(db, "users", id), {
-          name: this.getUserInfo.displayName,
+          displayName: this.getUserInfo.displayName,
           gender: this.validateInfo(this.userInfo.gender),
           age: this.validateInfo(this.userInfo.age),
         }, { merge: true });
@@ -199,7 +199,7 @@
           message: 'データを更新しました。',
           color: 'primary',
           timeout: 1500,
-        })
+        });
       },
       validateInfo(value) {
         return typeof value === "undefined" ? "" : value;

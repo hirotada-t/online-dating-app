@@ -5,12 +5,12 @@
       <h2>UserList</h2>
       <div class="q-pa-md row flex-start" :class="{hidden: nowLoading}">
         <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm registered-user"
-          v-for="(user, index) in userList.registered" :key="user.name" @click="(e) => propClickUser(e)"
+          v-for="(user, index) in userList.registered" :key="user.displayName" @click="(e) => propClickUser(e)"
           :data-key="index">
           <q-card class="row">
-            <img :src="user.img" class="col-5 col-sm-12 q-px-md q-pt-md">
+            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md">
             <q-card-section class="order-sm-last col-7 col-sm-12">
-              <div class="text-h6 over-text-hidden">{{user.name}}</div>
+              <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
                 age:
                 <span v-if="user.age === 0">---</span>

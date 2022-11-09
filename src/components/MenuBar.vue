@@ -64,7 +64,7 @@
 <script>
   import EssentialLink from './EssentialLink';
   import { signInWithPopup, signOut } from 'firebase/auth';
-  import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+  import { collection, addDoc, query, where, getDocs, getDoc, doc } from "firebase/firestore";
   import { auth, db, provider } from '../firebase';
   import { mapActions, mapGetters } from 'vuex';
 
@@ -90,12 +90,6 @@
       EssentialLink
     },
 
-    props: {
-      detail: {
-        type: Object,
-      }
-    },
-
     data() {
       return {
         essentialLinks: linksData
@@ -106,11 +100,7 @@
       ...mapActions('user', ['setIsAuth', 'setLoginUser', 'reset']),
       loginInWithGoogle() {
         signInWithPopup(auth, provider).then((result) => {
-          // サインイン→ストレージに保存→（新規登録）→画面遷移
-          console.log(result)
           this.setIsAuth(true);
-          this.setLoginUser(result.user);
-
           this.searchUser(result);
         });
       },
@@ -119,24 +109,20 @@
         const snap = await getDocs(q);
 
         if (snap.docs.length === 0) {
+          this.setLoginUser(res.user);
           this.$router.push('edit-profile');
-          this.setUserInfo(res);
+          this.setDB(res);
         } else {
+          this.setLoginUser(snap.docs[0].data());
           this.$router.push('search');
         }
       },
-      async setUserInfo(res) {
-        // 新規ユーザーをDBに登録
+      async setDB(res) {
         await addDoc(collection(db, "users"), {
-          name: res.user.displayName,
-          img: "img/sample-image.jpeg",
+          displayName: res.user.displayName,
+          photoURL: "img/sample-image.jpeg",
           uid: res.user.uid,
-          age: 0,
-          gender: "",
-          preferredType: "",
-          hobby: "",
-          comment: "",
-        })
+        });
       },
       logout() {
         if (confirm("ログアウトしますか？")) {

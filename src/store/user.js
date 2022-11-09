@@ -4,11 +4,15 @@ const state = {
     displayName: "",
     photoURL: "",
     uid: "",
-    age: 0,
+    birthDay: "",
     gender: "",
-    preferredType: "",
-    hobby: "",
-    comment: "",
+    prof: {
+      pr: "",
+      preferredType: "",
+      work: "",
+      hobby: "",
+      comment: "",
+    }
   },
   userList: {
     registered: [],
@@ -21,11 +25,8 @@ const mutations = {
     state.info.displayName = user.displayName;
     state.info.photoURL = "img/sample-image.jpeg";
     state.info.uid = user.uid;
-    state.info.birth = user.birth;
+    state.info.birthDay = user.birthDay;
     state.info.gender = user.gender;
-    state.info.preferredType = user.preferredType;
-    state.info.hobby = user.hobby;
-    state.info.comment = user.comment;
   },
   setIsAuth(state, user) {
     state.isAuth = user;
@@ -38,7 +39,20 @@ const mutations = {
   },
   reset(state) {
     state.isAuth = false;
-    state.info = {}
+    state.info = {
+      displayName: "",
+      photoURL: "",
+      uid: "",
+      birthDay: "",
+      gender: "",
+      prof: {
+        pr: "",
+        preferredType: "",
+        work: "",
+        hobby: "",
+        comment: "",
+      }
+    };
     state.userList.registered = [];
     state.userList.sample = [];
   }
