@@ -184,12 +184,4 @@
       this.userInfo = structuredClone(this.getUserInfo);
     },
   }
-  /*
-  （自己紹介）
-  ・ひとことPR（～28字）
-  ・好みのタイプ
-  ・仕事
-  ・趣味
-  ・その他コメント（～160字）
-  */
 </script>

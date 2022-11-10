@@ -1,7 +1,7 @@
 <template>
   <q-toolbar>
 
-    <q-btn stretch flat label="Online Dating App"  clickable to="search" />
+    <q-btn stretch flat label="Online Dating App" clickable to="search" />
 
     <q-space />
 
@@ -109,7 +109,11 @@
         const snap = await getDocs(q);
 
         if (snap.docs.length === 0) {
-          this.setLoginUser(res.user);
+          this.setLoginUser({
+            displayName : res.user.displayName,
+            photoURL : "img/sample-image.jpeg",
+            uid : res.user.uid,
+          });
           this.$router.push('edit-profile');
           this.setDB(res);
         } else {
