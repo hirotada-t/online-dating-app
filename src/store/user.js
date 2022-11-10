@@ -8,13 +8,11 @@ const state = {
     uid: "",
     birthDay: "",
     gender: "",
-    prof: {
-      pr: "",
-      preferredType: "",
-      work: "",
-      hobby: "",
-      introduction: "",
-    }
+    pr: "",
+    preferredType: "",
+    work: "",
+    hobby: "",
+    introduction: "",
   },
   userList: {
     registered: [],
@@ -25,13 +23,22 @@ const state = {
   date: date.formatDate(Date.now(), 'DD'),
 }
 
+const checkValue = (value) => {
+  return typeof value === "undefined" ? "" : value;
+}
+
 const mutations = {
   setLoginUser(state, user) {
-    state.info.displayName = user.displayName;
-    state.info.photoURL = "img/sample-image.jpeg";
-    state.info.uid = user.uid;
-    state.info.birthDay = user.birthDay;
-    state.info.gender = user.gender;
+    state.info.displayName = checkValue(user.displayName);
+    state.info.photoURL = checkValue(user.photoURL);
+    state.info.uid = checkValue(user.uid);
+    state.info.birthDay = checkValue(user.birthDay);
+    state.info.gender = checkValue(user.gender);
+    state.info.pr = checkValue(user.pr);
+    state.info.preferredType = checkValue(user.preferredType);
+    state.info.work = checkValue(user.work);
+    state.info.hobby = checkValue(user.hobby);
+    state.info.introduction = checkValue(user.introduction);
   },
   setIsAuth(state, user) {
     state.isAuth = user;
@@ -50,13 +57,11 @@ const mutations = {
       uid: "",
       birthDay: "",
       gender: "",
-      prof: {
-        pr: "",
-        preferredType: "",
-        work: "",
-        hobby: "",
-        introduction: "",
-      }
+      pr: "",
+      preferredType: "",
+      work: "",
+      hobby: "",
+      introduction: "",
     };
     state.userList.registered = [];
     state.userList.sample = [];

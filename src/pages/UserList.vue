@@ -8,7 +8,7 @@
           v-for="(user, index) in userList.registered" :key="user.displayName" @click="(e) => propClickUser(e)"
           :data-key="index">
           <q-card class="row">
-            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md">
+            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
@@ -25,7 +25,7 @@
         <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample"
           :key="sample.id.value" @click="(e) => propClickUser(e)" :data-key="index">
           <q-card class="row">
-            <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md">
+            <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{sample.name.first}}(Sample)</div>
               <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>

@@ -118,12 +118,7 @@
         }
       },
       async setDB(res) {
-        await addDoc(collection(db, "users"), {
-          displayName: res.user.displayName,
-          photoURL: "img/sample-image.jpeg",
-          uid: res.user.uid,
-          birthDay: "",
-        });
+        await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {
         if (confirm("ログアウトしますか？")) {

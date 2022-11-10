@@ -104,11 +104,11 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
               <q-separator inset />
-              <q-input filled v-model="userInfo.prof.pr" label="ひとことPR" />
-              <q-input filled v-model="userInfo.prof.preferredType" label="好みのタイプ" />
-              <q-input filled v-model="userInfo.prof.work" label="仕事" />
-              <q-input filled v-model="userInfo.prof.hobby" label="趣味" />
-              <q-input filled v-model="userInfo.prof.introduction" type="textarea" label="自己紹介" />
+              <q-input filled v-model="userInfo.pr" label="ひとことPR" />
+              <q-input filled v-model="userInfo.preferredType" label="好みのタイプ" />
+              <q-input filled v-model="userInfo.work" label="仕事" />
+              <q-input filled v-model="userInfo.hobby" label="趣味" />
+              <q-input filled v-model="userInfo.introduction" type="textarea" label="自己紹介" />
             </q-form>
           </div>
         </q-page>
@@ -167,11 +167,7 @@
         const docRef = await getDocs(q);
         const id = docRef.docs[0].id;
 
-        await setDoc(doc(db, "users", id), {
-          displayName: this.getUserInfo.displayName,
-          gender: this.userInfo.gender,
-          birthDay: this.userInfo.birthDay,
-        }, { merge: true });
+        await setDoc(doc(db, "users", id), this.userInfo, { merge: true });
         this.$q.notify({
           message: 'データを更新しました。',
           color: 'primary',
