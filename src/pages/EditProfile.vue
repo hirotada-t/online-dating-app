@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md flex flex-center" style="height: calc(100vh - 50px);">
-    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;" class="shadow-2 rounded-borders">
+    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;" class="shadow-2 rounded-borders bg-white">
 
       <q-drawer v-model="drawer" :width="200" :breakpoint="400">
         <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">

@@ -18,7 +18,8 @@
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント</div>
+              <div class="balloon over-text-hidden" v-if="user.pr === ''">コメントはありません。</div>
+              <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
             </q-card-section>
           </q-card>
         </div>
