@@ -81,13 +81,13 @@
               <h3 class="q-mb-sm">基本情報</h3>
               <q-separator inset />
               <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
-              <q-input filled v-model="userBirth" :rules="[
+              <q-input filled v-model="userInfo.birthDay" :rules="[
               val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| '過去の日付を入力してください。'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="userBirth" mask="YYYY-MM-DD">
+                      <q-date v-model="userInfo.birthDay" mask="YYYY-MM-DD">
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Close" color="primary" flat />
                         </div>
@@ -129,7 +129,6 @@
     data() {
       return {
         userInfo: {},
-        userBirth: "",
         options: ["", "男性", "女性"],
         drawer: true,
         openDialog: false,
@@ -138,24 +137,6 @@
 
     methods: {
       ...mapActions("user", ["setLoginUser", "reset"]),
-      onSubmit() {
-        if (this.accept !== true) {
-          this.$q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
-          this.$q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-          })
-        }
-      },
       imgRejected(rejectedEntries) {
         this.$q.notify({
           type: 'negative',
@@ -180,7 +161,6 @@
         this.$router.push('/');
       },
       async updateInfo() {
-        if (this.userBirth) this.birthToAge();
         this.setLoginUser(this.userInfo);
 
         const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
