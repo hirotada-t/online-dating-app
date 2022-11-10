@@ -1,15 +1,15 @@
 <template>
   <q-toolbar>
 
-    <q-toolbar-title>
-      Online Dating App
-    </q-toolbar-title>
+    <q-btn stretch flat label="Online Dating App" clickable to="search" />
 
-    <q-btn flat dense rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
+    <q-space />
+
+    <q-btn flat rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
       サインイン/ログイン
     </q-btn>
 
-    <q-btn flat dense rounded v-else>
+    <q-btn flat rounded v-else>
       <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
       <span class="q-ml-sm q-mr-md">
         {{$store.state.user.info.displayName}}
@@ -109,7 +109,11 @@
         const snap = await getDocs(q);
 
         if (snap.docs.length === 0) {
-          this.setLoginUser(res.user);
+          this.setLoginUser({
+            displayName : res.user.displayName,
+            photoURL : "img/sample-image.jpeg",
+            uid : res.user.uid,
+          });
           this.$router.push('edit-profile');
           this.setDB(res);
         } else {
@@ -118,11 +122,7 @@
         }
       },
       async setDB(res) {
-        await addDoc(collection(db, "users"), {
-          displayName: res.user.displayName,
-          photoURL: "img/sample-image.jpeg",
-          uid: res.user.uid,
-        });
+        await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {
         if (confirm("ログアウトしますか？")) {

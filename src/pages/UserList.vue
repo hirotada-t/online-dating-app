@@ -8,30 +8,31 @@
           v-for="(user, index) in userList.registered" :key="user.displayName" @click="(e) => propClickUser(e)"
           :data-key="index">
           <q-card class="row">
-            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md">
+            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
                 age:
-                <span v-if="user.age === 0">---</span>
-                <span v-else>{{user.age}}</span>
+                <span v-if="user.birthDay === ''">秘密</span>
+                <span v-else>{{birthToAge(user.birthDay)}}</span>
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント・PR</div>
+              <div class="balloon over-text-hidden" v-if="user.pr === ''">コメントはありません。</div>
+              <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
             </q-card-section>
           </q-card>
         </div>
         <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample"
           :key="sample.id.value" @click="(e) => propClickUser(e)" :data-key="index">
           <q-card class="row">
-            <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md">
+            <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{sample.name.first}}(Sample)</div>
               <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント・PR</div>
+              <div class="balloon over-text-hidden">一言コメント</div>
             </q-card-section>
           </q-card>
         </div>
@@ -101,10 +102,17 @@
         const userListString = JSON.stringify(this.getUserList);
         localStorage.setItem("userList", userListString);
       },
+      birthToAge(birthDay) {
+        let age = this.getToday.y - birthDay.slice(0, 4);
+        if (this.getToday.m - birthDay.slice(5, 7) < 0 || this.getToday.d - birthDay.slice(8, 10) < 0) {
+          age--;
+        }
+        return age;
+      },
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
     },
 
     created() {
@@ -120,9 +128,9 @@
         this.getUser();
       }
       this.userList = this.getUserList;
-      // 更新する直前でユーザーリストを保存する
       window.addEventListener("beforeunload", this.holdUsersAtReload);
     },
+
     mounted() {
       const storelist = this.getUserList;
       this.$nextTick(() => {
@@ -136,13 +144,12 @@
   }
   /*
   ToDo
-  ★ページリスト（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム）
+  ★ページ（HOME/ユーザーリスト→プロフィール詳細/プロフィール編集/メッセージルーム/メッセージ一覧）
+  ★未（HOME/プロフィール詳細/メッセージルーム/メッセージ一覧）
+  ・ストレージに画像をアップロード
   ・詳細ページの作成
-  ・Editページ（detailオブジェクトにまとめる・IDで読み込み）
-  ・プロフィールの更新内容をストアに保存
   ・マッチングの仕組み
   ・マッチングしたユーザー同士でのメッセージのやりとり
-  ・一覧ページで読み込む内容を減らす（メール・名前・画像・年齢）
   */
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md flex flex-center" style="height: calc(100vh - 50px);">
-    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;" class="shadow-2 rounded-borders">
+    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;" class="shadow-2 rounded-borders bg-white">
 
       <q-drawer v-model="drawer" :width="200" :breakpoint="400">
         <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
@@ -81,13 +81,13 @@
               <h3 class="q-mb-sm">基本情報</h3>
               <q-separator inset />
               <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
-              <q-input filled v-model="userBirth" :rules="[
-              val => val.slice(0, 4) < year || val.slice(5, 7) < month || val.slice(8, 10) < date || '過去の日付を入力してください。'
+              <q-input filled v-model="userInfo.birthDay" :rules="[
+              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| '過去の日付を入力してください。'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="userBirth" mask="YYYY-MM-DD">
+                      <q-date v-model="userInfo.birthDay" mask="YYYY-MM-DD">
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Close" color="primary" flat />
                         </div>
@@ -104,11 +104,11 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
               <q-separator inset />
-              <!-- <q-input filled v-model="pr" label="ひとことPR" />
-              <q-input filled v-model="preference" label="好みのタイプ" />
-              <q-input filled v-model="work" label="仕事" />
-              <q-input filled v-model="hobby" label="趣味" />
-              <q-input filled v-model="introduction" type="textarea" label="自己紹介" /> -->
+              <q-input filled v-model="userInfo.pr" label="ひとことPR" />
+              <q-input filled v-model="userInfo.preferredType" label="好みのタイプ" />
+              <q-input filled v-model="userInfo.work" label="仕事" />
+              <q-input filled v-model="userInfo.hobby" label="趣味" />
+              <q-input filled v-model="userInfo.introduction" type="textarea" label="自己紹介" />
             </q-form>
           </div>
         </q-page>
@@ -129,36 +129,14 @@
     data() {
       return {
         userInfo: {},
-        userBirth: "",
         options: ["", "男性", "女性"],
         drawer: true,
         openDialog: false,
-        year: date.formatDate(Date.now(), 'YYYY'),
-        month: date.formatDate(Date.now(), 'MM'),
-        date: date.formatDate(Date.now(), 'DD'),
       }
     },
 
     methods: {
       ...mapActions("user", ["setLoginUser", "reset"]),
-      onSubmit() {
-        if (this.accept !== true) {
-          this.$q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
-          this.$q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-          })
-        }
-      },
       imgRejected(rejectedEntries) {
         this.$q.notify({
           type: 'negative',
@@ -183,55 +161,27 @@
         this.$router.push('/');
       },
       async updateInfo() {
-        if (this.userBirth) this.birthToAge();
         this.setLoginUser(this.userInfo);
 
         const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
         const docRef = await getDocs(q);
         const id = docRef.docs[0].id;
 
-        await setDoc(doc(db, "users", id), {
-          displayName: this.getUserInfo.displayName,
-          gender: this.validateInfo(this.userInfo.gender),
-          age: this.validateInfo(this.userInfo.age),
-        }, { merge: true });
+        await setDoc(doc(db, "users", id), this.userInfo, { merge: true });
         this.$q.notify({
           message: 'データを更新しました。',
           color: 'primary',
           timeout: 1500,
         });
       },
-      validateInfo(value) {
-        return typeof value === "undefined" ? "" : value;
-      },
-      birthToAge() {
-        this.userInfo.age = this.year - this.userBirth.slice(0, 4);
-        if (this.month - this.userBirth.slice(5, 7) < 0 || this.date - this.userBirth.slice(8, 10) < 0) {
-          this.userInfo.age--;
-        }
-      },
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
     },
 
     created() {
-      const str = JSON.stringify(this.getUserInfo);
-      this.userInfo = JSON.parse(str);
+      this.userInfo = structuredClone(this.getUserInfo);
     },
   }
-  /*
-  （基本情報）
-  ・ニックネーム
-  ・年齢
-  ・画像
-  ・性別
-  （自己紹介）
-  ・ひとことPR（～28字）
-  ・好みのタイプ
-  ・仕事
-  ・趣味
-  ・その他コメント（～160字）
-  */
 </script>
