@@ -18,7 +18,7 @@
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント・PR</div>
+              <div class="balloon over-text-hidden">一言コメント</div>
             </q-card-section>
           </q-card>
         </div>
@@ -31,7 +31,7 @@
               <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント・PR</div>
+              <div class="balloon over-text-hidden">一言コメント</div>
             </q-card-section>
           </q-card>
         </div>

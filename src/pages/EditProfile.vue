@@ -169,17 +169,14 @@
 
         await setDoc(doc(db, "users", id), {
           displayName: this.getUserInfo.displayName,
-          gender: this.validateInfo(this.userInfo.gender),
-          birthDay: this.validateInfo(this.userInfo.birthDay),
+          gender: this.userInfo.gender,
+          birthDay: this.userInfo.birthDay,
         }, { merge: true });
         this.$q.notify({
           message: 'データを更新しました。',
           color: 'primary',
           timeout: 1500,
         });
-      },
-      validateInfo(value) {
-        return typeof value === "undefined" ? "" : value;
       },
     },
 
@@ -188,8 +185,7 @@
     },
 
     created() {
-      const str = JSON.stringify(this.getUserInfo);
-      this.userInfo = JSON.parse(str);
+      this.userInfo = structuredClone(this.getUserInfo);
     },
   }
   /*
