@@ -13,7 +13,7 @@ const state = {
       preferredType: "",
       work: "",
       hobby: "",
-      comment: "",
+      introduction: "",
     }
   },
   userList: {
@@ -55,7 +55,7 @@ const mutations = {
         preferredType: "",
         work: "",
         hobby: "",
-        comment: "",
+        introduction: "",
       }
     };
     state.userList.registered = [];

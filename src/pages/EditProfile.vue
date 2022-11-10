@@ -104,11 +104,11 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
               <q-separator inset />
-              <!-- <q-input filled v-model="pr" label="ひとことPR" />
-              <q-input filled v-model="preference" label="好みのタイプ" />
-              <q-input filled v-model="work" label="仕事" />
-              <q-input filled v-model="hobby" label="趣味" />
-              <q-input filled v-model="introduction" type="textarea" label="自己紹介" /> -->
+              <q-input filled v-model="userInfo.prof.pr" label="ひとことPR" />
+              <q-input filled v-model="userInfo.prof.preferredType" label="好みのタイプ" />
+              <q-input filled v-model="userInfo.prof.work" label="仕事" />
+              <q-input filled v-model="userInfo.prof.hobby" label="趣味" />
+              <q-input filled v-model="userInfo.prof.introduction" type="textarea" label="自己紹介" />
             </q-form>
           </div>
         </q-page>
@@ -193,11 +193,6 @@
     },
   }
   /*
-  （基本情報）
-  ・ニックネーム
-  ・年齢
-  ・画像
-  ・性別
   （自己紹介）
   ・ひとことPR（～28字）
   ・好みのタイプ
