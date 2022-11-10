@@ -122,6 +122,7 @@
           displayName: res.user.displayName,
           photoURL: "img/sample-image.jpeg",
           uid: res.user.uid,
+          birthDay: "",
         });
       },
       logout() {

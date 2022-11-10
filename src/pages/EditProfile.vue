@@ -82,7 +82,7 @@
               <q-separator inset />
               <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
               <q-input filled v-model="userBirth" :rules="[
-              val => val.slice(0, 4) < year || val.slice(5, 7) < month || val.slice(8, 10) < date || '過去の日付を入力してください。'
+              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| '過去の日付を入力してください。'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -133,9 +133,6 @@
         options: ["", "男性", "女性"],
         drawer: true,
         openDialog: false,
-        year: date.formatDate(Date.now(), 'YYYY'),
-        month: date.formatDate(Date.now(), 'MM'),
-        date: date.formatDate(Date.now(), 'DD'),
       }
     },
 
@@ -193,7 +190,7 @@
         await setDoc(doc(db, "users", id), {
           displayName: this.getUserInfo.displayName,
           gender: this.validateInfo(this.userInfo.gender),
-          age: this.validateInfo(this.userInfo.age),
+          birthDay: this.validateInfo(this.userInfo.birthDay),
         }, { merge: true });
         this.$q.notify({
           message: 'データを更新しました。',
@@ -204,16 +201,10 @@
       validateInfo(value) {
         return typeof value === "undefined" ? "" : value;
       },
-      birthToAge() {
-        this.userInfo.age = this.year - this.userBirth.slice(0, 4);
-        if (this.month - this.userBirth.slice(5, 7) < 0 || this.date - this.userBirth.slice(8, 10) < 0) {
-          this.userInfo.age--;
-        }
-      },
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
     },
 
     created() {

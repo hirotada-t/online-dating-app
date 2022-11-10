@@ -13,8 +13,8 @@
               <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
                 age:
-                <span v-if="user.age === 0">---</span>
-                <span v-else>{{user.age}}</span>
+                <span v-if="user.birthDay === ''">秘密</span>
+                <span v-else>{{birthToAge(user.birthDay)}}</span>
               </div>
             </q-card-section>
             <q-card-section class="col">
@@ -101,10 +101,17 @@
         const userListString = JSON.stringify(this.getUserList);
         localStorage.setItem("userList", userListString);
       },
+      birthToAge(birthDay) {
+        let age = this.getToday.y - birthDay.slice(0, 4);
+        if (this.getToday.m - birthDay.slice(5, 7) < 0 || this.getToday.d - birthDay.slice(8, 10) < 0) {
+          age--;
+        }
+        return age;
+      },
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
     },
 
     created() {
@@ -123,6 +130,7 @@
       // 更新する直前でユーザーリストを保存する
       window.addEventListener("beforeunload", this.holdUsersAtReload);
     },
+
     mounted() {
       const storelist = this.getUserList;
       this.$nextTick(() => {

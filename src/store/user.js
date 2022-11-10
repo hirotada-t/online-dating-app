@@ -1,3 +1,5 @@
+import { date } from 'quasar';
+
 const state = {
   isAuth: false,
   info: {
@@ -18,6 +20,9 @@ const state = {
     registered: [],
     sample: [],
   },
+  year: date.formatDate(Date.now(), 'YYYY'),
+  month: date.formatDate(Date.now(), 'MM'),
+  date: date.formatDate(Date.now(), 'DD'),
 }
 
 const mutations = {
@@ -62,6 +67,13 @@ const getters = {
   getIsAuth: state => state.isAuth,
   getUserInfo: state => state.info,
   getUserList: state => state.userList,
+  getToday: state => {
+    return {
+      y: state.year,
+      m: state.month,
+      d: state.date,
+    }
+  },
 }
 
 const actions = {
