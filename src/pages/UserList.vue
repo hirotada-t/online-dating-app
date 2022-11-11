@@ -32,7 +32,7 @@
               <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden">一言コメント</div>
+              <div class="balloon over-text-hidden">サンプルユーザーです</div>
             </q-card-section>
           </q-card>
         </div>
@@ -73,15 +73,31 @@
     },
 
     methods: {
-      ...mapActions("user", ["setRegistered", "setSample"]),
+      ...mapActions("user", ["setRegistered", "setSample", "setUserList"]),
       async getUser() {
         const arr = [];
         const loginUser = this.getUserInfo;
         const q = query(collection(db, "users"), where("uid", "!=", loginUser.uid));
         const queryUser = await getDocs(q);
-        queryUser.forEach(doc => arr.push(doc.data()));
+        queryUser.forEach(doc => {
+          arr.push(doc.data());
+          console.log(doc.data())
+          this.setUserList(doc.data());
+        });
 
         const response = await fetch(api.url, api.option).then(res => res.json());
+        console.log(response)
+        const sample = [];
+        for (let i = 0; i < response.results.length; i++) {
+          this.setUserList({
+            displayName: response.results[i].name.first + " " + response.results[i].name.last + "(Sample)",
+            photoURL: response.results[i].picture.large,
+            uid: "sample" + i,
+            birthDay: response.results[i].dob.date,
+            gender: response.results[i].gender,
+            introduction: "よろしくお願いします。",
+          });
+        }
 
         this.setSample(response.results);
         this.setRegistered(arr);
