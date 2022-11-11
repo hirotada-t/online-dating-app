@@ -18,6 +18,7 @@ const state = {
     registered: [],
     sample: [],
   },
+  list: [],
   year: date.formatDate(Date.now(), 'YYYY'),
   month: date.formatDate(Date.now(), 'MM'),
   date: date.formatDate(Date.now(), 'DD'),
@@ -42,6 +43,9 @@ const mutations = {
   },
   setIsAuth(state, user) {
     state.isAuth = user;
+  },
+  setUserList(state, user) {
+    state.list.push(user);
   },
   setRegistered(state, user) {
     state.userList.registered = user;
@@ -87,6 +91,9 @@ const actions = {
   },
   setIsAuth({ commit }, user) {
     commit('setIsAuth', user);
+  },
+  setUserList({ commit }, user) {
+    commit('setUserList', user);
   },
   setRegistered({ commit }, user) {
     commit('setRegistered', user);
