@@ -7,17 +7,17 @@
         <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm clicked-user" v-for="(user, index) in userList"
           :key="user.displayName" @click="(e) => propClickUser(e)" :data-key="index">
           <q-card class="row">
-            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
+            <div class="col-5 col-sm-12 q-px-md q-pt-md">
+              <img :src="user.photoURL" style="width: 100%;border-radius: 150px;">
+            </div>
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
-                age:
-                <span v-if="user.birthDay === ''">秘密</span>
-                <span v-else>{{birthToAge(user.birthDay)}}</span>
+                age: {{user.birthDay === "" ? "secret" : birthToAge(user.birthDay)}}
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden" v-if="user.pr === ''">コメントはありません。</div>
+              <div class="balloon over-text-hidden" v-if="user.pr === ''">No comment</div>
               <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
             </q-card-section>
           </q-card>
@@ -75,8 +75,11 @@
             uid: "sample" + i,
             birthDay: response.results[i].dob.date,
             gender: response.results[i].gender,
-            pr: "サンプルユーザーです",
-            introduction: "よろしくお願いします。",
+            pr: "I'm sample user.",
+            preferredType: "sample",
+            work: "sample",
+            hobby: "sample",
+            introduction: "Please remember me!",
           });
         }
       },
