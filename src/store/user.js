@@ -14,11 +14,7 @@ const state = {
     hobby: "",
     introduction: "",
   },
-  userList: {
-    registered: [],
-    sample: [],
-  },
-  list: [],
+  userList: [],
   year: date.formatDate(Date.now(), 'YYYY'),
   month: date.formatDate(Date.now(), 'MM'),
   date: date.formatDate(Date.now(), 'DD'),
@@ -45,13 +41,7 @@ const mutations = {
     state.isAuth = user;
   },
   setUserList(state, user) {
-    state.list.push(user);
-  },
-  setRegistered(state, user) {
-    state.userList.registered = user;
-  },
-  setSample(state, user) {
-    state.userList.sample = user;
+    state.userList.push(user);
   },
   reset(state) {
     state.isAuth = false;
@@ -67,6 +57,7 @@ const mutations = {
       hobby: "",
       introduction: "",
     };
+    state.userList = [];
     state.userList.registered = [];
     state.userList.sample = [];
   }

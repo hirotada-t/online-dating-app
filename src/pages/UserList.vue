@@ -4,40 +4,26 @@
     <div class="flex flex-center column" v-else>
       <h2>UserList</h2>
       <div class="q-pa-md row flex-start" :class="{hidden: nowLoading}">
-        <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm registered-user"
-          v-for="(user, index) in userList.registered" :key="user.displayName" @click="(e) => propClickUser(e)"
-          :data-key="index">
+        <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm clicked-user" v-for="(user, index) in userList"
+          :key="user.displayName" @click="(e) => propClickUser(e)" :data-key="index">
           <q-card class="row">
-            <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
+            <div class="col-5 col-sm-12 q-px-md q-pt-md">
+              <img :src="user.photoURL" style="width: 100%;border-radius: 150px;">
+            </div>
             <q-card-section class="order-sm-last col-7 col-sm-12">
               <div class="text-h6 over-text-hidden">{{user.displayName}}</div>
               <div class="text-subtitle2 over-text-hidden">
-                age:
-                <span v-if="user.birthDay === ''">秘密</span>
-                <span v-else>{{birthToAge(user.birthDay)}}</span>
+                age: {{user.birthDay === "" ? "secret" : birthToAge(user.birthDay)}}
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden" v-if="user.pr === ''">コメントはありません。</div>
+              <div class="balloon over-text-hidden" v-if="user.pr === ''">No comment</div>
               <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
             </q-card-section>
           </q-card>
         </div>
-        <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm sample-user" v-for="(sample, index) in userList.sample"
-          :key="sample.id.value" @click="(e) => propClickUser(e)" :data-key="index">
-          <q-card class="row">
-            <img :src="sample.picture.large" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
-            <q-card-section class="order-sm-last col-7 col-sm-12">
-              <div class="text-h6 over-text-hidden">{{sample.name.first}}(Sample)</div>
-              <div class="text-subtitle2 over-text-hidden">age: {{sample.dob.age}}</div>
-            </q-card-section>
-            <q-card-section class="col">
-              <div class="balloon over-text-hidden">サンプルユーザーです</div>
-            </q-card-section>
-          </q-card>
-        </div>
         <q-dialog v-model="openDialog">
-          <UserDetail :detail="clickedUserInfo" />
+          <UserDetail :detail="clickedUserInfo" :age="userAge" />
         </q-dialog>
       </div>
     </div>
@@ -62,7 +48,8 @@
     data() {
       return {
         nowLoading: true,
-        userList: {},
+        userList: [],
+        userAge: "",
         clickedUserInfo: {},
         openDialog: false,
       }
@@ -75,19 +62,12 @@
     methods: {
       ...mapActions("user", ["setRegistered", "setSample", "setUserList"]),
       async getUser() {
-        const arr = [];
         const loginUser = this.getUserInfo;
         const q = query(collection(db, "users"), where("uid", "!=", loginUser.uid));
         const queryUser = await getDocs(q);
-        queryUser.forEach(doc => {
-          arr.push(doc.data());
-          console.log(doc.data())
-          this.setUserList(doc.data());
-        });
+        queryUser.forEach(doc => this.setUserList(doc.data()));
 
         const response = await fetch(api.url, api.option).then(res => res.json());
-        console.log(response)
-        const sample = [];
         for (let i = 0; i < response.results.length; i++) {
           this.setUserList({
             displayName: response.results[i].name.first + " " + response.results[i].name.last + "(Sample)",
@@ -95,23 +75,18 @@
             uid: "sample" + i,
             birthDay: response.results[i].dob.date,
             gender: response.results[i].gender,
-            introduction: "よろしくお願いします。",
+            pr: "I'm sample user.",
+            preferredType: "sample",
+            work: "sample",
+            hobby: "sample",
+            introduction: "Please remember me!",
           });
         }
-
-        this.setSample(response.results);
-        this.setRegistered(arr);
       },
       propClickUser(e) {
-        const target = e.target.closest(".sample-user");
-        let index;
-        if (target == null) {
-          index = e.target.closest(".registered-user").dataset.key;
-          this.clickedUserInfo = this.userList.registered[index];
-        } else {
-          index = target.dataset.key;
-          this.clickedUserInfo = this.userList.sample[index];
-        }
+        const index = e.target.closest(".clicked-user").dataset.key;
+        this.clickedUserInfo = this.userList[index];
+        this.userAge = this.birthToAge(this.clickedUserInfo.birthDay);
         this.openDialog = true;
       },
       holdUsersAtReload() {
@@ -133,13 +108,12 @@
 
     created() {
       this.$q.loading.show();
-      const list = JSON.parse(localStorage.getItem("userList"));
-      const storelist = this.getUserList;
-      if (list != null) {
+      const listInLocal = JSON.parse(localStorage.getItem("userList"));
+      const listInStore = this.getUserList;
+      if (listInLocal != null) {
         // ローカルにリストが保存されている時（ページ更新時）
-        this.setRegistered(list.registered);
-        this.setSample(list.sample);
-      } else if (storelist.registered.length === 0 || storelist.sample.length === 0) {
+        listInLocal.forEach(user => this.setUserList(user));
+      } else if (listInStore.length === 0) {
         // ローカルにもストアにもリストが無い場合（ログイン時）
         this.getUser();
       }
@@ -148,7 +122,7 @@
     },
 
     mounted() {
-      const storelist = this.getUserList;
+      const listInStore = this.getUserList;
       this.$nextTick(() => {
         this.timer = setTimeout(() => {
           this.$q.loading.hide()
