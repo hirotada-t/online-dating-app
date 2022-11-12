@@ -6,7 +6,7 @@
       <div class="text-subtitle2 over-text-hidden">
         age:
         <span v-if="userDetail.birthDay === ''">秘密</span>
-        <span v-else>{{birthToAge(userDetail.birthDay)}}</span>
+        <span v-else>{{userAge}}</span>
       </div>
     </q-card-section>
     <q-card-section class="col">
@@ -20,33 +20,25 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex';
-  
   export default {
     name: 'UserDetail',
 
     props: {
       detail: Object,
+      age: Number,
     },
 
     data() {
       return {
         userDetail: this.detail,
+        userAge: this.age,
       }
     },
 
     methods: {
-      birthToAge(birthDay) {
-        let age = this.getToday.y - birthDay.slice(0, 4);
-        if (this.getToday.m - birthDay.slice(5, 7) < 0 || this.getToday.d - birthDay.slice(8, 10) < 0) {
-          age--;
-        }
-        return age;
-      },
     },
 
     computed: {
-      ...mapGetters("user", ["getToday"]),
     },
   }
 </script>

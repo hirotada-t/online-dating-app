@@ -23,7 +23,7 @@
           </q-card>
         </div>
         <q-dialog v-model="openDialog">
-          <UserDetail :detail="clickedUserInfo" />
+          <UserDetail :detail="clickedUserInfo" :age="userAge" />
         </q-dialog>
       </div>
     </div>
@@ -49,6 +49,7 @@
       return {
         nowLoading: true,
         userList: [],
+        userAge: "",
         clickedUserInfo: {},
         openDialog: false,
       }
@@ -82,6 +83,7 @@
       propClickUser(e) {
         const index = e.target.closest(".clicked-user").dataset.key;
         this.clickedUserInfo = this.userList[index];
+        this.userAge = this.birthToAge(this.clickedUserInfo.birthDay);
         this.openDialog = true;
       },
       holdUsersAtReload() {
