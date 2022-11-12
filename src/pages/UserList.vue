@@ -4,9 +4,8 @@
     <div class="flex flex-center column" v-else>
       <h2>UserList</h2>
       <div class="q-pa-md row flex-start" :class="{hidden: nowLoading}">
-        <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm clicked-user"
-          v-for="(user, index) in userList" :key="user.displayName" @click="(e) => propClickUser(e)"
-          :data-key="index">
+        <div class="col-12 col-sm-4 col-md-3 q-px-sm q-my-sm clicked-user" v-for="(user, index) in userList"
+          :key="user.displayName" @click="(e) => propClickUser(e)" :data-key="index">
           <q-card class="row">
             <img :src="user.photoURL" class="col-5 col-sm-12 q-px-md q-pt-md" style="border-radius: 150px;">
             <q-card-section class="order-sm-last col-7 col-sm-12">
