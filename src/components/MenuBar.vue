@@ -11,7 +11,7 @@
 
     <q-btn flat rounded v-else>
       <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
-      <span class="q-ml-sm q-mr-md">
+      <span class="q-ml-sm q-mr-md login-user-btn">
         {{$store.state.user.info.displayName}}
       </span>
       <q-menu>
@@ -64,8 +64,9 @@
 <script>
   import EssentialLink from './EssentialLink';
   import { signInWithPopup, signOut } from 'firebase/auth';
+  import { getStrage, ref, getDownloadURL } from 'firebase/storage';
   import { collection, addDoc, query, where, getDocs, getDoc, doc } from "firebase/firestore";
-  import { auth, db, provider } from '../firebase';
+  import { auth, db, provider, storage } from '../firebase';
   import { mapActions, mapGetters } from 'vuex';
 
   const linksData = [
@@ -110,9 +111,9 @@
 
         if (snap.docs.length === 0) {
           this.setLoginUser({
-            displayName : res.user.displayName,
-            photoURL : "img/sample-image.jpeg",
-            uid : res.user.uid,
+            displayName: res.user.displayName,
+            photoURL: "img/sample-image.jpeg",
+            uid: res.user.uid,
           });
           this.$router.push('edit-profile');
           this.setDB(res);
@@ -146,6 +147,10 @@
     },
 
     created() {
+      getDownloadURL(ref(storage, 'sample-image.jpeg'))
+        .then((url) => {
+          console.log(url)
+        });
       // ログインユーザー情報が保存されている時は内容をストアで受け取る
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       const isAuth = JSON.parse(localStorage.getItem("isAuth"));
@@ -164,4 +169,10 @@
 </script>
 
 <style lang="scss" scoped>
+  .login-user-btn {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 </style>

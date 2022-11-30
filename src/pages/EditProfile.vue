@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md flex flex-center" style="height: calc(100vh - 50px);">
-    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;" class="shadow-2 rounded-borders bg-white">
+    <q-layout view="lHh Lpr lff" container style="height: 600px; max-width: 800px;"
+      class="shadow-2 rounded-borders bg-white">
 
       <q-drawer v-model="drawer" :width="200" :breakpoint="400">
         <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
@@ -121,7 +122,8 @@
   import { mapGetters, mapActions } from 'vuex';
   import { signOut } from 'firebase/auth';
   import { setDoc, collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
-  import { auth, db } from '../firebase';
+  import { auth, db, storage } from '../firebase';
+  import { getStorage, ref, uploadBytes } from "firebase/storage";
   import { Notify, date } from 'quasar';
 
   export default {
@@ -161,6 +163,13 @@
         this.$router.push('/');
       },
       async updateInfo() {
+        const imageRef = ref(storage, this.userInfo.photoURL.name);
+
+        if (!imageRef) {
+          uploadBytes(imageRef, this.userInfo.photoURL.file).then((snapshot) => {
+            console.log('Uploaded a blob or file!');
+          });
+        }
         this.setLoginUser(this.userInfo);
 
         const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
