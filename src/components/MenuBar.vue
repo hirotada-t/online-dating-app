@@ -6,7 +6,7 @@
     <q-space />
 
     <q-btn flat rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
-      サインイン/ログイン
+      Signin/Login
     </q-btn>
 
     <q-btn flat rounded v-else>
@@ -25,7 +25,7 @@
               <q-icon name="fa-solid fa-magnifying-glass" />
             </q-item-section>
             <q-item-section>
-              ユーザーを探す
+              Search user
             </q-item-section>
           </q-item>
           <q-item clickable to="message">
@@ -33,7 +33,7 @@
               <q-icon name="fa-solid fa-comments" />
             </q-item-section>
             <q-item-section>
-              メッセージ
+              Message
             </q-item-section>
           </q-item>
           <q-item clickable to="edit-profile">
@@ -41,7 +41,7 @@
               <q-icon name="fa-solid fa-gears" />
             </q-item-section>
             <q-item-section>
-              設定
+              Setting
             </q-item-section>
           </q-item>
           <q-item clickable @click="logout">
@@ -49,7 +49,7 @@
               <q-icon name="fa-solid fa-right-from-bracket" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>ログアウト</q-item-label>
+              <q-item-label>Logout</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -126,7 +126,7 @@
         await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {
-        if (confirm("ログアウトしますか？")) {
+        if (confirm("Do you want to log out?")) {
           signOut(auth).then(() => {
             localStorage.clear();
             this.reset();

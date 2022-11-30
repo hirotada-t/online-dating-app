@@ -12,7 +12,7 @@
                 <q-icon name="fa-regular fa-circle-user" />
               </q-item-section>
               <q-item-section>
-                基本情報
+                Information
               </q-item-section>
             </q-item>
 
@@ -21,7 +21,7 @@
                 <q-icon name="star" />
               </q-item-section>
               <q-item-section>
-                自己PR
+                Profile
               </q-item-section>
             </q-item>
 
@@ -30,7 +30,7 @@
                 <q-icon name="send" />
               </q-item-section>
               <q-item-section>
-                お問い合わせ
+                Contact
               </q-item-section>
             </q-item>
 
@@ -39,14 +39,14 @@
                 <q-icon name="fa-regular fa-face-sad-tear" />
               </q-item-section>
               <q-item-section>
-                退会する
+                Withdrawal
               </q-item-section>
             </q-item>
 
             <q-separator />
 
             <q-item class="flex flex-center q-mt-md">
-              <q-btn label="保存する" type="submit" color="primary" size="15px" class="q-px-lg" @click="updateInfo()" />
+              <q-btn label="save" type="submit" color="primary" size="15px" class="q-px-lg" @click="updateInfo()" />
             </q-item>
           </q-list>
         </q-scroll-area>
@@ -65,12 +65,12 @@
       <q-dialog v-model="openDialog">
         <q-card>
           <q-card-section class="row items-center">
-            アカウントを削除して退会します。<br>
-            本当によろしいですか？
+            Delete your account and cancel your membership.<br>
+            Are you sure you want to do this?
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="primary" v-close-popup />
-            <q-btn label="退会する" color="negative" v-close-popup class="q-px-md" @click="withdrawal" />
+            <q-btn label="Withdrawal" color="negative" v-close-popup class="q-px-md" @click="withdrawal" />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -79,11 +79,15 @@
         <q-page padding>
           <div class="q-pa-md">
             <q-form class="q-gutter-md">
-              <h3 class="q-mb-sm">基本情報</h3>
+              <h3 class="q-mb-sm">Information</h3>
               <q-separator inset />
-              <q-input filled v-model="userInfo.displayName" label="ニックネーム" />
+              <q-input filled v-model="userInfo.displayName" label="Nick name" counter maxlength="10">
+                <template v-slot:hint>
+                  Field hint
+                </template>
+              </q-input>
               <q-input filled v-model="userInfo.birthDay" :rules="[
-              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| '過去の日付を入力してください。'
+              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| 'Enter a date in the past.'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -97,19 +101,27 @@
                   </q-icon>
                 </template>
               </q-input>
-              <q-select filled v-model="userInfo.gender" :options="options" label="性別" />
+              <q-select filled v-model="userInfo.gender" :options="options" label="gender" />
               <q-file filled v-model="userInfo.photoURL" accept=".jpg, image/*" @rejected="imgRejected">
                 <template v-slot:prepend>
                   <q-icon name="fa-regular fa-image" />
                 </template>
               </q-file>
-              <h3 class="q-mb-sm q-mt-xl" id="introduction">自己PR</h3>
+              <h3 class="q-mb-sm q-mt-xl" id="introduction">Profile</h3>
               <q-separator inset />
-              <q-input filled v-model="userInfo.pr" label="ひとことPR" />
-              <q-input filled v-model="userInfo.preferredType" label="好みのタイプ" />
-              <q-input filled v-model="userInfo.work" label="仕事" />
-              <q-input filled v-model="userInfo.hobby" label="趣味" />
-              <q-input filled v-model="userInfo.introduction" type="textarea" label="自己紹介" />
+              <q-input filled v-model="userInfo.pr" label="short comment" counter maxlength="15">
+                <template v-slot:hint>
+                  Field hint
+                </template>
+              </q-input>
+              <q-input filled v-model="userInfo.preferredType" label="preferred type" />
+              <q-input filled v-model="userInfo.work" label="work" />
+              <q-input filled v-model="userInfo.hobby" label="hobby" />
+              <q-input filled v-model="userInfo.introduction" type="textarea" label="introduction" counter maxlength="500">
+                <template v-slot:hint>
+                  Field hint
+                </template>
+              </q-input>
             </q-form>
           </div>
         </q-page>
@@ -131,7 +143,7 @@
     data() {
       return {
         userInfo: {},
-        options: ["", "男性", "女性"],
+        options: ["", "male", "female"],
         drawer: true,
         openDialog: false,
       }
