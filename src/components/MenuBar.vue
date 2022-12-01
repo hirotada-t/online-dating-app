@@ -6,12 +6,12 @@
     <q-space />
 
     <q-btn flat rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
-      サインイン/ログイン
+      Signin/Login
     </q-btn>
 
     <q-btn flat rounded v-else>
       <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
-      <span class="q-ml-sm q-mr-md">
+      <span class="q-ml-sm q-mr-md login-user-btn">
         {{$store.state.user.info.displayName}}
       </span>
       <q-menu>
@@ -25,7 +25,7 @@
               <q-icon name="fa-solid fa-magnifying-glass" />
             </q-item-section>
             <q-item-section>
-              ユーザーを探す
+              Search user
             </q-item-section>
           </q-item>
           <q-item clickable to="message">
@@ -33,7 +33,7 @@
               <q-icon name="fa-solid fa-comments" />
             </q-item-section>
             <q-item-section>
-              メッセージ
+              Message
             </q-item-section>
           </q-item>
           <q-item clickable to="edit-profile">
@@ -41,7 +41,7 @@
               <q-icon name="fa-solid fa-gears" />
             </q-item-section>
             <q-item-section>
-              設定
+              Setting
             </q-item-section>
           </q-item>
           <q-item clickable @click="logout">
@@ -49,7 +49,7 @@
               <q-icon name="fa-solid fa-right-from-bracket" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>ログアウト</q-item-label>
+              <q-item-label>Logout</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -64,8 +64,9 @@
 <script>
   import EssentialLink from './EssentialLink';
   import { signInWithPopup, signOut } from 'firebase/auth';
+  import { getStrage, ref, getDownloadURL } from 'firebase/storage';
   import { collection, addDoc, query, where, getDocs, getDoc, doc } from "firebase/firestore";
-  import { auth, db, provider } from '../firebase';
+  import { auth, db, provider, storage } from '../firebase';
   import { mapActions, mapGetters } from 'vuex';
 
   const linksData = [
@@ -110,9 +111,9 @@
 
         if (snap.docs.length === 0) {
           this.setLoginUser({
-            displayName : res.user.displayName,
-            photoURL : "img/sample-image.jpeg",
-            uid : res.user.uid,
+            displayName: res.user.displayName,
+            photoURL: "img/sample-image.jpeg",
+            uid: res.user.uid,
           });
           this.$router.push('edit-profile');
           this.setDB(res);
@@ -125,7 +126,7 @@
         await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {
-        if (confirm("ログアウトしますか？")) {
+        if (confirm("Do you want to log out?")) {
           signOut(auth).then(() => {
             localStorage.clear();
             this.reset();
@@ -146,6 +147,10 @@
     },
 
     created() {
+      getDownloadURL(ref(storage, 'sample-image.jpeg'))
+        .then((url) => {
+          console.log(url)
+        });
       // ログインユーザー情報が保存されている時は内容をストアで受け取る
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       const isAuth = JSON.parse(localStorage.getItem("isAuth"));
@@ -164,4 +169,10 @@
 </script>
 
 <style lang="scss" scoped>
+  .login-user-btn {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 </style>

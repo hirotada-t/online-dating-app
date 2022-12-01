@@ -128,7 +128,7 @@
           this.$q.loading.hide()
           this.timer = void 0
           this.nowLoading = false;
-        }, 1500)
+        }, 1500);
       })
     },
   }
