@@ -37,13 +37,12 @@
 
     props: {
       detail: Object,
-      age: Number,
     },
 
     data() {
       return {
         userDetail: this.detail,
-        userAge: this.age,
+        userAge: 111,
         loading: false,
       }
     },
@@ -55,9 +54,6 @@
           this["loading"] = false
         }, 3000);
       },
-    },
-
-    computed: {
     },
   }
 </script>

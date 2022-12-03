@@ -52,12 +52,10 @@
             <q-separator />
 
             <q-item class="flex flex-center q-mt-md">
-              <q-btn label="preview" type="submit" color="primary" size="15px" class="q-px-lg" @click="openPreview = true"/>
+              <q-btn label="preview" type="submit" color="primary" size="15px" class="q-px-lg"
+                @click="openPreview = true" />
             </q-item>
           </q-list>
-          <q-dialog v-model="openPreview">
-            <UserDetail :detail="userInfo" :age=1 />
-          </q-dialog>
         </q-scroll-area>
 
         <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 150px">
@@ -70,6 +68,10 @@
           </div>
         </q-img>
       </q-drawer>
+      
+      <q-dialog v-model="openPreview">
+        <UserDetail :detail="userInfo"/>
+      </q-dialog>
 
       <q-dialog v-model="openDialog">
         <q-card>
@@ -96,7 +98,7 @@
                 </template>
               </q-input>
               <q-input filled v-model="userInfo.birthDay" :rules="[
-              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| 'Enter a date in the past.'
+              val => val.slice(0, 4) < getToday().y || val.slice(5, 7) < getToday().m || val.slice(8, 10) < getToday().d|| 'Enter a date in the past.'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -122,7 +124,8 @@
               <q-input filled v-model="userInfo.preferredType" label="preferred type" />
               <q-input filled v-model="userInfo.work" label="work" />
               <q-input filled v-model="userInfo.hobby" label="hobby" />
-              <q-input filled v-model="userInfo.introduction" type="textarea" label="introduction" counter maxlength="500">
+              <q-input filled v-model="userInfo.introduction" type="textarea" label="introduction" counter
+                maxlength="500">
                 <template v-slot:hint>
                   Field hint
                 </template>
@@ -142,7 +145,8 @@
   import { auth, db, storage } from '../firebase';
   import { getStorage, ref, uploadBytes } from "firebase/storage";
   import { Notify, date } from 'quasar';
-  import UserDetail from 'components/UserDetail'
+  import UserDetail from 'components/UserDetail';
+  import { getToday, birthToAge } from '../functions/index.js'
 
   export default {
     name: 'EditProfile',
@@ -209,7 +213,7 @@
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList"]),
     },
 
     created() {
