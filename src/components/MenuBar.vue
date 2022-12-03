@@ -149,6 +149,7 @@
     created() {
       getDownloadURL(ref(storage, 'sample-image.jpeg'))
         .then((url) => {
+          // ストレージの処理を記述
           console.log(url)
         });
       // ログインユーザー情報が保存されている時は内容をストアで受け取る
