@@ -2,8 +2,10 @@
   <q-card class="row detail-page">
     <div class="col-12 col-sm-5 q-px-md q-pt-md">
       <img :src="userDetail.photoURL" style="width: 100%;border-radius: 100px;">
-      <div class="balloon over-text-hidden" v-if="userDetail.pr === ''">No comment</div>
-      <div class="balloon over-text-hidden" v-else>{{userDetail.pr}}</div>
+      <div class="balloon">
+        <div v-if="userDetail.pr === ''">No comment</div>
+        <div class="over-text-hidden" v-else>{{userDetail.pr}}</div>
+      </div>
     </div>
     <q-card-section class="order-sm-last col-12 col-sm-7">
       <div class="text-h3 over-text-hidden">{{userDetail.displayName}}</div>

@@ -45,10 +45,19 @@
 
             <q-separator />
 
-            <q-item class="flex flex-center q-mt-md">
+            <q-item class="flex flex-center q-my-md">
               <q-btn label="save" type="submit" color="primary" size="15px" class="q-px-lg" @click="updateInfo()" />
             </q-item>
+
+            <q-separator />
+
+            <q-item class="flex flex-center q-mt-md">
+              <q-btn label="preview" type="submit" color="primary" size="15px" class="q-px-lg" @click="openPreview = true"/>
+            </q-item>
           </q-list>
+          <q-dialog v-model="openPreview">
+            <UserDetail :detail="userInfo" :age=1 />
+          </q-dialog>
         </q-scroll-area>
 
         <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 150px">
@@ -109,11 +118,7 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">Profile</h3>
               <q-separator inset />
-              <q-input filled v-model="userInfo.pr" label="short comment" counter maxlength="15">
-                <template v-slot:hint>
-                  Field hint
-                </template>
-              </q-input>
+              <q-input filled v-model="userInfo.pr" label="short comment" />
               <q-input filled v-model="userInfo.preferredType" label="preferred type" />
               <q-input filled v-model="userInfo.work" label="work" />
               <q-input filled v-model="userInfo.hobby" label="hobby" />
@@ -137,6 +142,7 @@
   import { auth, db, storage } from '../firebase';
   import { getStorage, ref, uploadBytes } from "firebase/storage";
   import { Notify, date } from 'quasar';
+  import UserDetail from 'components/UserDetail'
 
   export default {
     name: 'EditProfile',
@@ -146,7 +152,12 @@
         options: ["", "male", "female"],
         drawer: true,
         openDialog: false,
+        openPreview: false,
       }
+    },
+
+    components: {
+      UserDetail
     },
 
     methods: {
@@ -206,3 +217,25 @@
     },
   }
 </script>
+
+<style lang="scss">
+  .balloon {
+    position: relative;
+    padding: 10px;
+    background-color: #bdffad;
+    box-shadow: 0px 0px 10px 0px #a7a7a7;
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      left: 20px;
+      top: -15px;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid #bdffad;
+      border-left: 15px solid transparent;
+    }
+  }
+</style>

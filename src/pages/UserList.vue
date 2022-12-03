@@ -17,8 +17,10 @@
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden" v-if="user.pr === ''">No comment</div>
-              <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
+              <div class="balloon">
+                <div v-if="user.pr === ''">No comment</div>
+                <div class="over-text-hidden" v-else>{{user.pr}}</div>
+              </div>
             </q-card-section>
           </q-card>
         </div>
