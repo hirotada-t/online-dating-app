@@ -2,8 +2,10 @@
   <q-card class="row detail-page">
     <div class="col-12 col-sm-5 q-px-md q-pt-md">
       <img :src="userDetail.photoURL" style="width: 100%;border-radius: 100px;">
-      <div class="balloon over-text-hidden" v-if="userDetail.pr === ''">No comment</div>
-      <div class="balloon over-text-hidden" v-else>{{userDetail.pr}}</div>
+      <div class="balloon">
+        <div v-if="userDetail.pr === ''">No comment</div>
+        <div class="over-text-hidden" v-else>{{userDetail.pr}}</div>
+      </div>
     </div>
     <q-card-section class="order-sm-last col-12 col-sm-7">
       <div class="text-h3 over-text-hidden">{{userDetail.displayName}}</div>
@@ -11,13 +13,15 @@
         age:{{userDetail.birthDay === "" ? "secret" : userAge}}
       </div>
       <div class="text-h6">gender: {{userDetail.gender === "" ? "secret" : userDetail.gender}}</div>
-      <div class="text-h6">preferred type: {{userDetail.preferredType === "" ? "secret" : userDetail.preferredType}}</div>
+      <div class="text-h6">preferred type: {{userDetail.preferredType === "" ? "secret" : userDetail.preferredType}}
+      </div>
       <div class="text-h6">work: {{userDetail.work === "" ? "secret" : userDetail.work}}</div>
       <div class="text-h6">hobby: {{userDetail.hobby === "" ? "secret" : userDetail.hobby}}</div>
-      <div class="text-h6">introduction: {{userDetail.introduction === "" ? "Please remember me!" : userDetail.introduction}}</div>
+      <div class="text-h6">introduction: {{userDetail.introduction === "" ? "Please remember me!" :
+        userDetail.introduction}}</div>
       <q-card-actions align="center">
         <q-btn flat label="close" color="primary" v-close-popup />
-        <q-btn padding="5px 20px" push :loading="loading" color="primary" @click="simulateProgress(4)" style="width: 150px">
+        <q-btn padding="5px 20px" push :loading="loading" color="primary" @click="requestLoad()" style="width: 150px">
           Send Request
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
@@ -30,32 +34,40 @@
 </template>
 
 <script>
+  import { birthToAge } from '../functions/index.js';
+
   export default {
     name: 'UserDetail',
 
     props: {
       detail: Object,
-      age: Number,
     },
 
     data() {
       return {
         userDetail: this.detail,
-        userAge: this.age,
+        userAge: birthToAge(this.detail.birthDay),
         loading: false,
       }
     },
 
     methods: {
-      simulateProgress() {
-        this["loading"] = true
-        setTimeout(() => {
-          this["loading"] = false
-        }, 3000);
+      requestLoad() {
+        if (this.userDetail.uid.slice(0, 6) === "sample") {
+          alert("マッチングしました");
+          this.$router.push('message');
+        } else {
+          this["loading"] = true;
+          setTimeout(() => {
+            this.sendRequest();
+            alert("リクエストを送りました");
+            this["loading"] = false;
+          }, 2000);
+        }
       },
-    },
-
-    computed: {
+      sendRequest() {
+        // リクエストを送る処理内容
+      },
     },
   }
 </script>

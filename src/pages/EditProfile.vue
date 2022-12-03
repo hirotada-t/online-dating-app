@@ -45,8 +45,15 @@
 
             <q-separator />
 
-            <q-item class="flex flex-center q-mt-md">
+            <q-item class="flex flex-center q-my-md">
               <q-btn label="save" type="submit" color="primary" size="15px" class="q-px-lg" @click="updateInfo()" />
+            </q-item>
+
+            <q-separator />
+
+            <q-item class="flex flex-center q-mt-md">
+              <q-btn label="preview" type="submit" color="primary" size="15px" class="q-px-lg"
+                @click="openPreview = true" />
             </q-item>
           </q-list>
         </q-scroll-area>
@@ -61,6 +68,10 @@
           </div>
         </q-img>
       </q-drawer>
+
+      <q-dialog v-model="openPreview">
+        <UserDetail :detail="userInfo"/>
+      </q-dialog>
 
       <q-dialog v-model="openDialog">
         <q-card>
@@ -87,7 +98,7 @@
                 </template>
               </q-input>
               <q-input filled v-model="userInfo.birthDay" :rules="[
-              val => val.slice(0, 4) < getToday.y || val.slice(5, 7) < getToday.m || val.slice(8, 10) < getToday.d|| 'Enter a date in the past.'
+              val => val.slice(0, 4) < today.y || val.slice(5, 7) < today.m || val.slice(8, 10) < today.d|| 'Enter a date in the past.'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -109,15 +120,12 @@
               </q-file>
               <h3 class="q-mb-sm q-mt-xl" id="introduction">Profile</h3>
               <q-separator inset />
-              <q-input filled v-model="userInfo.pr" label="short comment" counter maxlength="15">
-                <template v-slot:hint>
-                  Field hint
-                </template>
-              </q-input>
+              <q-input filled v-model="userInfo.pr" label="short comment" />
               <q-input filled v-model="userInfo.preferredType" label="preferred type" />
               <q-input filled v-model="userInfo.work" label="work" />
               <q-input filled v-model="userInfo.hobby" label="hobby" />
-              <q-input filled v-model="userInfo.introduction" type="textarea" label="introduction" counter maxlength="500">
+              <q-input filled v-model="userInfo.introduction" type="textarea" label="introduction" counter
+                maxlength="500">
                 <template v-slot:hint>
                   Field hint
                 </template>
@@ -137,6 +145,8 @@
   import { auth, db, storage } from '../firebase';
   import { getStorage, ref, uploadBytes } from "firebase/storage";
   import { Notify, date } from 'quasar';
+  import UserDetail from 'components/UserDetail';
+  import { getToday, birthToAge } from '../functions/index.js'
 
   export default {
     name: 'EditProfile',
@@ -146,7 +156,13 @@
         options: ["", "male", "female"],
         drawer: true,
         openDialog: false,
+        openPreview: false,
+        today: getToday(),
       }
+    },
+
+    components: {
+      UserDetail
     },
 
     methods: {
@@ -198,7 +214,7 @@
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList", "getToday"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList"]),
     },
 
     created() {
@@ -206,3 +222,25 @@
     },
   }
 </script>
+
+<style lang="scss">
+  .balloon {
+    position: relative;
+    padding: 10px;
+    background-color: #bdffad;
+    box-shadow: 0px 0px 10px 0px #a7a7a7;
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      left: 20px;
+      top: -15px;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid #bdffad;
+      border-left: 15px solid transparent;
+    }
+  }
+</style>

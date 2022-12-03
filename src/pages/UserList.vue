@@ -17,13 +17,15 @@
               </div>
             </q-card-section>
             <q-card-section class="col">
-              <div class="balloon over-text-hidden" v-if="user.pr === ''">No comment</div>
-              <div class="balloon over-text-hidden" v-else>{{user.pr}}</div>
+              <div class="balloon">
+                <div v-if="user.pr === ''">No comment</div>
+                <div class="over-text-hidden" v-else>{{user.pr}}</div>
+              </div>
             </q-card-section>
           </q-card>
         </div>
         <q-dialog v-model="openDialog">
-          <UserDetail :detail="clickedUserInfo" :age="userAge" />
+          <UserDetail :detail="clickedUserInfo" />
         </q-dialog>
       </div>
     </div>
@@ -35,7 +37,8 @@
   import { db } from '../firebase';
   import { mapActions, mapGetters } from 'vuex';
   import { Loading, QSpinnerGears } from 'quasar';
-  import UserDetail from 'components/UserDetail'
+  import UserDetail from 'components/UserDetail';
+  import { getToday, birthToAge } from '../functions/index.js';
 
   const api = {
     url: 'https://randomuser.me/api/?results=5',
@@ -94,11 +97,7 @@
         localStorage.setItem("userList", userListString);
       },
       birthToAge(birthDay) {
-        let age = this.getToday.y - birthDay.slice(0, 4);
-        if (this.getToday.m - birthDay.slice(5, 7) < 0 || this.getToday.d - birthDay.slice(8, 10) < 0) {
-          age--;
-        }
-        return age;
+        return birthToAge(birthDay);
       },
     },
 

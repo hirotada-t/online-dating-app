@@ -7,5 +7,8 @@
 <script>
 export default {
   name: 'HOME',
+  created() {
+    
+  }
 }
 </script>
