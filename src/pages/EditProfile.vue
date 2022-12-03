@@ -68,7 +68,7 @@
           </div>
         </q-img>
       </q-drawer>
-      
+
       <q-dialog v-model="openPreview">
         <UserDetail :detail="userInfo"/>
       </q-dialog>
@@ -98,7 +98,7 @@
                 </template>
               </q-input>
               <q-input filled v-model="userInfo.birthDay" :rules="[
-              val => val.slice(0, 4) < getToday().y || val.slice(5, 7) < getToday().m || val.slice(8, 10) < getToday().d|| 'Enter a date in the past.'
+              val => val.slice(0, 4) < today.y || val.slice(5, 7) < today.m || val.slice(8, 10) < today.d|| 'Enter a date in the past.'
               ]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -157,6 +157,7 @@
         drawer: true,
         openDialog: false,
         openPreview: false,
+        today: getToday(),
       }
     },
 

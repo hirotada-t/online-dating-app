@@ -32,6 +32,8 @@
 </template>
 
 <script>
+  import { birthToAge } from '../functions/index.js';
+
   export default {
     name: 'UserDetail',
 
@@ -42,7 +44,7 @@
     data() {
       return {
         userDetail: this.detail,
-        userAge: 111,
+        userAge: birthToAge(this.detail.birthDay),
         loading: false,
       }
     },
