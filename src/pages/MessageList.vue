@@ -3,20 +3,26 @@
 
     <q-drawer elevated v-model="right">
       <q-scroll-area style="height: calc(100% - 150px); border-right: 1px solid #ddd">
-        <q-list padding>
-          <q-item active clickable v-ripple href="#introduction">
+        <div v-if="Object.keys(getSampleMatchingList).length === 0" class="text-center q-mt-lg">
+          No matching...
+        </div>
+        <q-list v-else padding>
+          <q-item active clickable v-ripple href="#introduction" v-for="u in getSampleMatchingList" :key="u.uid">
             <q-item-section avatar>
-              <img :src="matchingUser.photoURL" alt="" class="w-40px rounded100">
+              <img :src="u.photoURL" alt="" class="w-40px rounded100">
             </q-item-section>
             <q-item-section>
-              {{matchingUser.displayName}}
+              {{u.displayName}}
             </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
-    <q-page style="width: 100%;">
+    <q-page style="width: 100%;" v-if="Object.keys(getSampleMatchingList).length > 0">
+      <div class="bg-grey-9 text-white text-h5 q-pa-md">
+        {{sampleMatching.displayName}}
+      </div>
       <!--画面-->
       <div id="field">
         <ul id="chat-ul"></ul>
@@ -54,6 +60,8 @@
     props: ["matchingUser"],
     data() {
       return {
+        sampleMatching: this.matchingUser,
+        sampleMatchingList: [],
         right: true,
       }
     },
@@ -113,15 +121,19 @@
             this.output(inputText.value, 'robot');
             break;
         }
+      },
+      holdMessageAtReload() {
+
       }
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo", "getUserList"]),
+      ...mapGetters("user", ["getUserInfo", "getUserList", "getSampleMatchingList"]),
     },
 
     created() {
-      this.userInfo = structuredClone(this.getUserInfo);
+
+      window.addEventListener("beforeunload", this.holdMessageAtReload);
     },
 
     mounted() {
@@ -137,6 +149,7 @@
   .q-page-container {
     max-width: auto;
   }
+
   /*チャットのフィールド*/
   #field {
     width: 100%;

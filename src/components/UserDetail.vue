@@ -21,8 +21,10 @@
         userDetail.introduction}}</div>
       <q-card-actions align="center">
         <q-btn flat label="close" color="primary" v-close-popup />
-        <q-btn v-if="userDetail.uid.slice(0,6) === 'sample'" padding="5px 20px" push :loading="loading" color="primary" @click="requestLoad()" style="width: 150px">
-          Send Request
+        <q-btn v-if="userDetail.uid.slice(0,6) === 'sample'" padding="5px 20px" push :loading="loading" color="primary"
+          @click="requestLoad()" style="width: 150px">
+          <span v-if="typeof getSampleMatchingList[userDetail.uid.charAt(6)] === 'undefined'">Send Request</span>
+          <span v-else>start to talk</span>
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
             Please wait...
@@ -55,17 +57,20 @@
     },
 
     methods: {
-      ...mapActions("user", ["setMatchingUser"]),
+      ...mapActions("user", ["setMatchingList", "setSampleMatchingList"]),
       async requestLoad() {
         if (this.userDetail.uid.slice(0, 6) === "sample") {
-
-          this.setMatchingUser(this.userDetail.uid);
-
-          const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
-          const docRef = await getDocs(q);
-          const id = docRef.docs[0].id;
-          await setDoc(doc(db, "users", id), this.getUserInfo, { merge: true });
-
+          const num = this.userDetail.uid.charAt(6);
+          for (let i = 0; i < this.getSampleMatchingList.length; i++) {
+            if (this.getSampleMatchingList[i].uid.charAt(6) === num) {
+              this.$router.push({
+                name: 'message',
+                params: { matchingUser: this.userDetail }
+              });
+              return;
+            }
+          }
+          this.setSampleMatchingList(this.userDetail);
           alert("マッチングしました");
           this.$router.push({
             name: 'message',
@@ -82,11 +87,15 @@
       },
       async sendRequest() {
         // リクエストを送る処理内容
+        const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
+        const docRef = await getDocs(q);
+        const id = docRef.docs[0].id;
+        await setDoc(doc(db, "users", id), this.getUserInfo, { merge: true });
       },
     },
 
     computed: {
-      ...mapGetters("user", ["getUserInfo"]),
+      ...mapGetters("user", ["getUserInfo", "getMatchingList", "getSampleMatchingList"]),
     },
   }
 </script>

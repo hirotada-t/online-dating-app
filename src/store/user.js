@@ -11,9 +11,10 @@ const state = {
     work: "",
     hobby: "",
     introduction: "",
-    matchingUId: [],
+    matchingList: [],
   },
   userList: [],
+  sampleMatchingList: [],
 }
 
 const checkValue = (value) => {
@@ -39,8 +40,11 @@ const mutations = {
   setUserList(state, user) {
     state.userList.push(user);
   },
-  setMatchingUser(state, user) {
-    state.info.matchingUId.push(user);
+  setSampleMatchingList(state, user) {
+    state.sampleMatchingList.push(user);
+  },
+  setMatchingList(state, user) {
+    state.info.matchingList.push(user);
   },
   reset(state) {
     state.isAuth = false;
@@ -66,6 +70,8 @@ const getters = {
   getIsAuth: state => state.isAuth,
   getUserInfo: state => state.info,
   getUserList: state => state.userList,
+  getSampleMatchingList: state => state.sampleMatchingList,
+  getMatchingList: state => state.info.matchingList,
 }
 
 const actions = {
@@ -84,8 +90,11 @@ const actions = {
   setSample({ commit }, user) {
     commit('setSample', user);
   },
-  setMatchingUser({ commit }, user) {
-    commit('setMatchingUser', user);
+  setMatchingList({ commit }, user) {
+    commit('setMatchingList', user);
+  },
+  setSampleMatchingList({ commit }, user) {
+    commit('setSampleMatchingList', user);
   },
   reset({ commit }) {
     commit('reset');
