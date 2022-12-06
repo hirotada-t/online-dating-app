@@ -55,7 +55,10 @@
       requestLoad() {
         if (this.userDetail.uid.slice(0, 6) === "sample") {
           alert("マッチングしました");
-          this.$router.push('message');
+          this.$router.push({
+            name: 'message',
+            params: { matchingUser: this.userDetail }
+          });
         } else {
           this["loading"] = true;
           setTimeout(() => {

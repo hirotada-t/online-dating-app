@@ -1,5 +1,3 @@
-import { date } from 'quasar';
-
 const state = {
   isAuth: false,
   info: {
@@ -13,6 +11,7 @@ const state = {
     work: "",
     hobby: "",
     introduction: "",
+    matchingUId: [],
   },
   userList: [],
 }
