@@ -31,9 +31,3 @@
     },
   }
 </script>
-<style lang="scss">
-  .q-page-container {
-    max-width: 1200px;
-    margin: auto;
-  }
-</style>

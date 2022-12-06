@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="u-list-container">
     <div class="" v-if="nowLoading"></div>
     <div class="flex flex-center column" v-else>
       <h2>UserList</h2>
@@ -143,6 +143,10 @@
 </script>
 
 <style lang="scss">
+  .u-list-container {
+    max-width: 1200px;
+    margin: auto;
+  }
   .q-card {
     transition: all .3s;
     cursor: pointer;

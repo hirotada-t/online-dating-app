@@ -21,8 +21,10 @@
         userDetail.introduction}}</div>
       <q-card-actions align="center">
         <q-btn flat label="close" color="primary" v-close-popup />
-        <q-btn padding="5px 20px" push :loading="loading" color="primary" @click="requestLoad()" style="width: 150px">
-          Send Request
+        <q-btn v-if="userDetail.uid.slice(0,6) === 'sample'" padding="5px 20px" push :loading="loading" color="primary"
+          @click="requestLoad()" style="width: 150px">
+          <span v-if="typeof getSampleMatchingList[userDetail.uid.charAt(6)] === 'undefined'">Send Request</span>
+          <span v-else>start to talk</span>
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
             Please wait...
@@ -34,7 +36,10 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex';
   import { birthToAge } from '../functions/index.js';
+  import { auth, db, storage } from '../firebase';
+  import { setDoc, collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
   export default {
     name: 'UserDetail',
@@ -52,10 +57,25 @@
     },
 
     methods: {
-      requestLoad() {
+      ...mapActions("user", ["setMatchingList", "setSampleMatchingList"]),
+      async requestLoad() {
         if (this.userDetail.uid.slice(0, 6) === "sample") {
+          const num = this.userDetail.uid.charAt(6);
+          for (let i = 0; i < this.getSampleMatchingList.length; i++) {
+            if (this.getSampleMatchingList[i].uid.charAt(6) === num) {
+              this.$router.push({
+                name: 'message',
+                params: { matchingUser: this.userDetail }
+              });
+              return;
+            }
+          }
+          this.setSampleMatchingList(this.userDetail);
           alert("マッチングしました");
-          this.$router.push('message');
+          this.$router.push({
+            name: 'message',
+            params: { matchingUser: this.userDetail }
+          });
         } else {
           this["loading"] = true;
           setTimeout(() => {
@@ -65,9 +85,17 @@
           }, 2000);
         }
       },
-      sendRequest() {
+      async sendRequest() {
         // リクエストを送る処理内容
+        const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
+        const docRef = await getDocs(q);
+        const id = docRef.docs[0].id;
+        await setDoc(doc(db, "users", id), this.getUserInfo, { merge: true });
       },
+    },
+
+    computed: {
+      ...mapGetters("user", ["getUserInfo", "getMatchingList", "getSampleMatchingList"]),
     },
   }
 </script>

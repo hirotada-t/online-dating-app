@@ -1,4 +1,10 @@
 const state = {
+  sampleMessage: [
+    {
+      opponentId: "",
+      talk: [[]]
+    },
+  ],
 }
 
 const mutations = {
@@ -11,7 +17,7 @@ const actions = {
 }
 
 export default {
-  namespaced:true,
+  namespaced: true,
   state,
   mutations,
   getters,

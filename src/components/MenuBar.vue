@@ -1,57 +1,35 @@
 <template>
   <q-toolbar>
 
-    <q-btn stretch flat label="Online Dating App" clickable to="search" />
+    <q-toolbar-title>
+      Online Dating App
+    </q-toolbar-title>
 
-    <q-space />
+
+    <q-tabs align="left" v-if="$store.state.user.isAuth">
+      <q-route-tab to="/userlist" label="User list" />
+      <q-route-tab to="/message" label="Message" />
+      <q-route-tab to="/edit-profile" label="Setting" />
+    </q-tabs>
 
     <q-btn flat rounded icon="fa-brands fa-google" @click="loginInWithGoogle" v-if="!$store.state.user.isAuth">
       Signin/Login
     </q-btn>
-
     <q-btn flat rounded v-else>
       <img round :src="$store.state.user.info.photoURL" alt="" class="w-40px rounded100">
       <span class="q-ml-sm q-mr-md login-user-btn">
         {{$store.state.user.info.displayName}}
       </span>
       <q-menu>
+        <q-item clickable @click="logout">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-right-from-bracket" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Logout</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-list style="min-width: 200px">
-          <q-item v-close-popup>
-            <q-item-section>MENU</q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item clickable to="search">
-            <q-item-section avatar>
-              <q-icon name="fa-solid fa-magnifying-glass" />
-            </q-item-section>
-            <q-item-section>
-              Search user
-            </q-item-section>
-          </q-item>
-          <q-item clickable to="message">
-            <q-item-section avatar>
-              <q-icon name="fa-solid fa-comments" />
-            </q-item-section>
-            <q-item-section>
-              Message
-            </q-item-section>
-          </q-item>
-          <q-item clickable to="edit-profile">
-            <q-item-section avatar>
-              <q-icon name="fa-solid fa-gears" />
-            </q-item-section>
-            <q-item-section>
-              Setting
-            </q-item-section>
-          </q-item>
-          <q-item clickable @click="logout">
-            <q-item-section avatar>
-              <q-icon name="fa-solid fa-right-from-bracket" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Logout</q-item-label>
-            </q-item-section>
-          </q-item>
           <q-separator />
           <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         </q-list>
@@ -116,13 +94,13 @@
             uid: res.user.uid,
           });
           this.$router.push('edit-profile');
-          this.setDB(res);
+          this.setDB();
         } else {
           this.setLoginUser(snap.docs[0].data());
-          this.$router.push('search');
+          this.$router.push('userlist');
         }
       },
-      async setDB(res) {
+      async setDB() {
         await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {
