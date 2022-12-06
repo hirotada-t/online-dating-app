@@ -153,7 +153,7 @@
   /*チャットのフィールド*/
   #field {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 160px);
     padding: 7px 0 14px;
     box-sizing: border-box;
     margin: 0 auto;
