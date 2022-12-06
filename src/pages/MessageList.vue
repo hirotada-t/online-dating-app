@@ -1,7 +1,7 @@
 <template>
-  <div class="q-pa-md flex flex-center">
+  <div class="flex flex-center">
 
-    <q-drawer elevated v-model="right" :width="300" :breakpoint="400">
+    <q-drawer elevated v-model="right">
       <q-scroll-area style="height: calc(100% - 150px); border-right: 1px solid #ddd">
         <q-list padding>
           <q-item active clickable v-ripple href="#introduction">
@@ -16,19 +16,18 @@
       </q-scroll-area>
     </q-drawer>
 
-    <div class="">
-
+    <q-page style="width: 100%;">
       <!--画面-->
       <div id="field">
         <ul id="chat-ul"></ul>
       </div>
 
       <!--入力場所，送信ボタン-->
-      <div id="input-field">
+      <div id="input-field" class="flex flex-center q-px-sm">
         <input type="text" id="chat-input">
         <input type="button" value="Send" id="chat-button" @click="btnFunc">
       </div>
-    </div>
+    </q-page>
 
   </div>
 </template>
@@ -80,8 +79,8 @@
           chatBtn.disabled = true;
           setTimeout(() => {
             chatBtn.disabled = false;
-            li.classList.add('text-left');
             div.classList.add('chat-left');
+            li.classList.add('text-left');
             ul.appendChild(li);
             li.appendChild(div);
             chatCount++;
@@ -135,13 +134,15 @@
 </script>
 
 <style lang="scss">
+  .q-page-container {
+    max-width: auto;
+  }
   /*チャットのフィールド*/
   #field {
-    width: 300px;
-    height: 230px;
+    width: 100%;
+    height: calc(100vh - 100px);
     padding: 7px 0 14px;
     box-sizing: border-box;
-    background-color: #EEE;
     margin: 0 auto;
     background-color: #81AECF;
     /*横向きのスクロール禁止*/
@@ -159,9 +160,8 @@
   }
 
   #input-field {
-    width: 300px;
+    width: 100%;
     height: 45px;
-    display: flex;
     box-sizing: border-box;
     border-bottom: 1px solid #777;
     border-left: 1px solid #777;
@@ -173,14 +173,13 @@
   /*入力する場所*/
   #chat-input {
     height: 25px;
-    width: 67%;
+    width: 80%;
     display: block;
     font-size: 14px;
     color: #000;
     box-sizing: border-box;
     border: 1px solid #777;
     border-radius: 4px;
-    padding-left: 10px;
     margin: auto 10px;
   }
 
@@ -193,9 +192,7 @@
   #chat-button {
     cursor: pointer;
     height: 25px;
-    width: 24%;
-    margin: auto;
-    margin-right: 7%;
+    width: 100px;
     font-size: 13px;
     background: #8873FF;
     color: white;
@@ -218,7 +215,6 @@
   }
 
   #chat-ul>li {
-    position: relative;
     display: block;
     width: 100%;
     margin-top: 7px;
@@ -238,18 +234,19 @@
   }
 
   .chat-right {
-    margin-right: 15px;
+    position: relative;
+    margin-right: 100px;
     background: #A4E496;
     text-align: left;
 
-    &:before {
+    &:after {
       display: block;
       position: absolute;
       content: "";
       height: 10px;
       width: 10px;
       top: 50%;
-      right: 0;
+      right: -15px;
       margin-right: 7px;
       transform: rotate(45deg) skew(-10deg, -10deg);
       transform-origin: 100% 0%;
@@ -258,7 +255,8 @@
   }
 
   .chat-left {
-    margin-left: 15px;
+    position: relative;
+    margin-left: 100px;
     background: #FFF;
 
     &:before {
@@ -268,7 +266,7 @@
       width: 10px;
       display: block;
       top: 50%;
-      margin-left: -14px;
+      margin-left: -15px;
       transform: rotate(45deg) skew(-10deg, -10deg);
       transform-origin: 100% 0%;
       background: #FFF;

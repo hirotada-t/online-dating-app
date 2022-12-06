@@ -21,7 +21,7 @@
         userDetail.introduction}}</div>
       <q-card-actions align="center">
         <q-btn flat label="close" color="primary" v-close-popup />
-        <q-btn padding="5px 20px" push :loading="loading" color="primary" @click="requestLoad()" style="width: 150px">
+        <q-btn v-if="userDetail.uid.slice(0,6) === 'sample'" padding="5px 20px" push :loading="loading" color="primary" @click="requestLoad()" style="width: 150px">
           Send Request
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
