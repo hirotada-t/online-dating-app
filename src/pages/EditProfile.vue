@@ -64,7 +64,7 @@
               <img :src="$store.state.user.info.photoURL">
             </q-avatar>
             <div class="text-weight-bold">{{$store.state.user.info.displayName}}</div>
-            <div>@sample</div>
+            <!-- <div>@sample</div> -->
           </div>
         </q-img>
       </q-drawer>
