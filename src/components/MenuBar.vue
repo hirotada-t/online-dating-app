@@ -94,13 +94,13 @@
             uid: res.user.uid,
           });
           this.$router.push('edit-profile');
-          this.setDB(res);
+          this.setDB();
         } else {
           this.setLoginUser(snap.docs[0].data());
           this.$router.push('userlist');
         }
       },
-      async setDB(res) {
+      async setDB() {
         await addDoc(collection(db, "users"), this.getUserInfo);
       },
       logout() {

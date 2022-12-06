@@ -34,7 +34,10 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex';
   import { birthToAge } from '../functions/index.js';
+  import { auth, db, storage } from '../firebase';
+  import { setDoc, collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
   export default {
     name: 'UserDetail',
@@ -52,8 +55,17 @@
     },
 
     methods: {
-      requestLoad() {
+      ...mapActions("user", ["setMatchingUser"]),
+      async requestLoad() {
         if (this.userDetail.uid.slice(0, 6) === "sample") {
+
+          this.setMatchingUser(this.userDetail.uid);
+
+          const q = query(collection(db, "users"), where("uid", "==", this.getUserInfo.uid));
+          const docRef = await getDocs(q);
+          const id = docRef.docs[0].id;
+          await setDoc(doc(db, "users", id), this.getUserInfo, { merge: true });
+
           alert("マッチングしました");
           this.$router.push({
             name: 'message',
@@ -68,9 +80,13 @@
           }, 2000);
         }
       },
-      sendRequest() {
+      async sendRequest() {
         // リクエストを送る処理内容
       },
+    },
+
+    computed: {
+      ...mapGetters("user", ["getUserInfo"]),
     },
   }
 </script>

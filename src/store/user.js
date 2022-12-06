@@ -39,6 +39,9 @@ const mutations = {
   setUserList(state, user) {
     state.userList.push(user);
   },
+  setMatchingUser(state, user) {
+    state.info.matchingUId.push(user);
+  },
   reset(state) {
     state.isAuth = false;
     state.info = {
@@ -80,6 +83,9 @@ const actions = {
   },
   setSample({ commit }, user) {
     commit('setSample', user);
+  },
+  setMatchingUser({ commit }, user) {
+    commit('setMatchingUser', user);
   },
   reset({ commit }) {
     commit('reset');
